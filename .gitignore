@@ -61,6 +61,6 @@ typings/
 .next
 
 
-./memeMaster.code-workspace
-./.idea
+*.code-workspace
+.idea
 .DS_Store
