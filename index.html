@@ -5,9 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Meme Master</title>
+    <script src="./js/settings.js"></script>
+    <script charset="utf-8" src="https://ucarecdn.com/libs/widget/3.6.1/uploadcare.full.min.js"></script>
+    <script src="https://ucarecdn.com/libs/widget-tab-effects/1.x/uploadcare.tab-effects.js"></script>
+    <script src="./js/generator.js"></script>
 </head>
 <body>
-   <header></header> 
-   <main></main>
+   <header>
+       <button id="myMemeButton" style="display:none">My Meme</button>
+       <button id="accountButton" style="display:none">Account</button>
+       <button id="signupButton">Sign Up</button>
+       <button id="loginButton">Log In</button>
+   </header> 
+   <main>
+       <div id="uploadContainer">
+            <input id="uploadButton"
+                type="hidden"
+                role="uploadcare-uploader"
+                name="content"
+                data-crop="1:1">
+       </div>
+
+       <div id="memeContainer">
+           <img id="meme" src="./img/doge.jpg" alt="Doge">
+       </div>
+       <button id="generateButton">Generate</button>
+   </main>
 </body>
 </html>
