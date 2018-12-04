@@ -19,13 +19,14 @@
     color: white;
     font-family: Impact;
     text-shadow:
-    -4px -4px 0 #000,  
-     4px -4px 0 #000,
-    -4px  4px 0 #000,
-     4px  4px 0 #000;
+    -3px -3px 0 #000,  
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000;
      border: 1px dashed gray;
      width: 499px;
      padding: 0;
+    cursor: pointer;
 }
 
 #topText {
@@ -34,4 +35,24 @@
 
 #bottomText {
     bottom: 3px;
+}
+
+.memeText input {
+    background-color: transparent;
+    border:none;
+    text-align: center;
+    font-size: 0.999em;
+    color: white;
+    font-family: Impact;
+    text-shadow:
+    -3px -3px 0 #000,  
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000;
+     width: 100%;
+}
+
+.memeText input:focus {
+    outline: none;
+    caret-color: black;
 }
