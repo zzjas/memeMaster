@@ -1,5 +1,37 @@
 #memeContainer {
     margin: auto;
-    height: 300px;
-    width: 300px;
+    width: 45%;
+    position: relative;
+}
+
+#memeImg {
+    z-index: 1;
+    height: 500px;
+    width: 500px;
+    margin: 0;
+}
+
+.memeText {
+    position: absolute;
+    z-index: 2;
+    text-align: center;
+    font-size: 4em;
+    color: white;
+    font-family: Impact;
+    text-shadow:
+    -4px -4px 0 #000,  
+     4px -4px 0 #000,
+    -4px  4px 0 #000,
+     4px  4px 0 #000;
+     border: 1px dashed gray;
+     width: 499px;
+     padding: 0;
+}
+
+#topText {
+    top: 0;
+}
+
+#bottomText {
+    bottom: 3px;
 }
