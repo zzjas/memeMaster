@@ -1,4 +1,4 @@
-import * as download from './download.js';
+// import * as download from './download.js';
 
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 
@@ -80,9 +80,9 @@ function openDialog(url) {
     meme.setAttribute('src', url);
     meme.addEventListener('load', ()=>{ dialog.showModal(); });
 
-    dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
-        download.downloadImage(url);
-    });
+    // dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
+    //     download.downloadImage(url);
+    // });
 
     dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
     });
