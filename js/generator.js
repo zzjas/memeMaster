@@ -1,5 +1,6 @@
 import * as button from './button.js';
 import * as share from './share.js';
+import * as db from './firebase.js';
 
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 let firebase = app_firebase;
@@ -125,11 +126,12 @@ function openDialog(url) {
     });
 
     let shareButton = dialog.querySelector('#succShareButton');
-    let shareFail = dialog.querySelector('#shareFail');
-    share.initShare(shareButton, shareFail);
+    let shareResult = dialog.querySelector('#shareResult');
+    share.initShare(shareButton, shareResult);
 
 
     dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
+        db.saveToAccount(aads,asdas,asdasd,asda);
     });
     dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
 

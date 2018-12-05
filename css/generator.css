@@ -63,6 +63,7 @@
 dialog {
     position: fixed;
     top: 3%;
+    bottom: 3%;
 }
 
 dialog img {

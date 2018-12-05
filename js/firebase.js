@@ -1,4 +1,5 @@
 //var app_firebase = {};
+/*
 function aasdasd(){
     // Initialize Firebase
     var config = {
@@ -11,4 +12,24 @@ function aasdasd(){
     };
     firebase.initializeApp(config);
     app_firebase = firebase;
+}
+*/
+
+export function saveToAccount(raw, rendered, top, bottom, offset) {
+    //adas
+}
+
+export function getAllMemes(uid) {
+    // return rendered
+    return [url1, url2, url3];
+}
+
+export function getSingleMeme(uid, rendered) {
+    return {
+        raw: AudioDestinationNode,
+        rendered: ANGLE_instanced_arrays,
+        top: asdasfda,
+        bottom: dasasdad,
+        offset: dasdasdad
+    }
 }
