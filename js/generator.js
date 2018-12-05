@@ -5,7 +5,7 @@ function main() {
     document.querySelector('#memeImg').src= imgURL;
 
     let p = document.createElement('p');
-    p.innerHTML = imgURL;
+    p.innerHTML = `Raw: <a href="${imgURL}" target="_blank">${imgURL}</a>`;
     document.body.appendChild(p);
     
     // Set up the UploadCare widget
@@ -60,7 +60,7 @@ function handleGenerate() {
     let ctx = c.getContext("2d");
     ctx.canvas.width = 500;
     ctx.canvas.height = 500;
-    var background = new Image();
+    let background = new Image();
     background.crossOrigin = 'anonymous';
     background.src = imgURL; 
 
@@ -69,10 +69,16 @@ function handleGenerate() {
         ctx.font = "4em Impact";
         drawStroked(ctx, "Upper Meme", 230, 70);
         drawStroked(ctx, "Lower Meme", 230, 430);
-        var d = c.toDataURL("image/png");
-        console.log(d);
+        let newImgDataURI = c.toDataURL("image/png");
+
+        uploadRenderedImg(newImgDataURI);
+
     }
 }
+
+
+
+
 
 
 
@@ -81,8 +87,31 @@ function handleGenerate() {
 
 
 
+/**
+ * Turn the data uri to a file-like object in Javascript and upload it to
+ * uploadcare.
+ * @param {Data URI} newImgDataURI 
+ */
+function uploadRenderedImg(newImgDataURI) {
+    let blobBin = atob(newImgDataURI.split(',')[1]);
+    let a = [];
+    for(let i = 0; i < blobBin.length; i++) {
+        a.push(blobBin.charCodeAt(i));
+    }
+    let newImgBlob = new Blob([new Uint8Array(a)], {type: 'image/png'});
+    newImgBlob.lastModifiedDate = new Date();
+    newImgBlob.name = 'newImg.png';
 
+    let newImg = uploadcare.fileFrom('object', newImgBlob);
 
+    newImg.done((fileInfo)=>{
+        let p = document.createElement('p');
+        p.innerHTML = `Rendered: <a href="${fileInfo.cdnUrl}" target="_blank">${fileInfo.cdnUrl}</a>`;
+        document.body.appendChild(p);
+    }).fail(()=>{
+        console.log('Upload Failed');
+    });
+}
 
 /**
  * When user double clicks the text, add an input field to allow user to change
