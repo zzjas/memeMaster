@@ -63,7 +63,30 @@ function handleGenerate() {
 
 
 
-/******************************* Stable *************************************/
+/******************************* Helpers ************************************/
+
+/**
+ * Open a success dialog to ask for user's next operation.
+ * @param {string} url 
+ */
+function openDialog(url) {
+    let t= document.getElementsByTagName('template')[0];
+    let dialog = t.content.querySelector('dialog').cloneNode(true);
+    //console.warn(dialog);
+    console.warn(dialog.querySelector('img'));
+    let meme = dialog.querySelector('img'); 
+    meme.setAttribute('src', url);
+    meme.addEventListener('load', ()=>{ dialog.showModal(); });
+
+    dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
+        let save = document.querySelector('#succSaveButton');
+    });
+    dialog.querySelector('#succDiscardButton').addEventListener('click', ()=>{
+        let d = document.querySelector('dialog');
+        d.parentElement.removeChild(d);
+    });
+    document.body.appendChild(dialog);
+}
 
 
 
@@ -89,6 +112,7 @@ function uploadRenderedImg(newImgDataURI) {
         p.innerHTML = `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
         document.querySelector('#generateButton').innerHTML = 'Generate';
+        openDialog(fileInfo.cdnUrl);
     }).fail(()=>{
         console.error('Upload Failed');
     });

@@ -59,3 +59,34 @@
     outline: none;
     caret-color: black;
 }
+
+dialog {
+    position: fixed;
+    top: 3%;
+}
+
+dialog img {
+    margin: auto;
+}
+
+dialog button {
+    background-color: gray;
+    height: 5%;
+    width: 50%;
+    color: white;
+    font-style: bold;
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+dialog button img {
+    width: 20%;
+    height: 100%;
+    margin: 0;
+    display: inline-block;
+}
+
+dialog p {
+    display: inline-block;
+}

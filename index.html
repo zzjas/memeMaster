@@ -37,13 +37,34 @@
        <button id="generateButton">Generate</button>
        <canvas id="myCanvas" style="display:none;"></canvas>
    </main>
+
+   <div style="display: none">
+       Icons made by
+       <a href="https://www.flaticon.com/authors/maxim-basinski" title="Maxim Basinski">
+            Maxim Basinski
+       </a> from 
+       <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+        is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+   </div>
    <template>
         <dialog>
             <img src="" alt="Your Meme">
-            <button id="succDownloadButton">Download</button>
-            <button id="succShareButton">Share</button>
-            <button id="succSaveButton">Save to Account</button>
-            <button id="succDiscardButton">Discard</button>
+            <button id="succDownloadButton">
+                <img src="./img/download.svg">
+                <p>Download</p>
+            </button>
+            <button id="succShareButton">
+                <img src="./img/share.svg">
+                <p>Share</p>
+            </button>
+            <button id="succSaveButton">
+                <img src="./img/save.svg">
+                <p>Save to Account</p>
+            </button>
+            <button id="succDiscardButton">
+                <img src="./img/trash.svg">
+                <p>Discard</p>
+            </button>
         </dialog>
    </template>
    <script src="./js/share.js"></script>
