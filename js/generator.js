@@ -1,6 +1,7 @@
+let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
+
 function main() {
     // Put default or last meme as placeholder
-    let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
     document.querySelector('#memeImg').src= imgURL;
 
     let p = document.createElement('p');
@@ -9,7 +10,7 @@ function main() {
     
     // Set up the UploadCare widget
     let upload = uploadcare.Widget('[role="uploadcare-uploader"]');
-    upload.onChange(uploadHandleChange);
+    //upload.onChange(uploadHandleChange);
     upload.onUploadComplete(uploadHandleComplete);
 
     // Allow user to change the text by double clicking on the text
@@ -39,11 +40,10 @@ function drawStroked(ctx, text, x, y) {
  */
 function handleGenerate() {
     let tt = document.querySelector('#topText');
-    let children = tt.childNodes[0];
-
-    console.log(children.offsetLeft);
     let bt = document.querySelector('#bottomText');
     let img = document.querySelector('#memeImg');
+
+
     let topTextOffset = {
         top: tt.offsetTop - img.offsetTop,
         left: tt.offsetLeft - img.offsetLeft
@@ -55,22 +55,34 @@ function handleGenerate() {
     console.log(topTextOffset);
     console.log(bottomTextOffset);
 
-    var c = document.getElementsByTagName('canvas')[0];
-    var ctx = c.getContext("2d");
 
+    let c = document.querySelector('#myCanvas');
+    let ctx = c.getContext("2d");
+    ctx.canvas.width = 500;
+    ctx.canvas.height = 500;
     var background = new Image();
     background.crossOrigin = 'anonymous';
-    background.src = "https://ucarecdn.com/0e3489a6-2c12-4b9f-b4c1-e0c136b90686/-/crop/500x500/175,0/-/preview/";
+    background.src = imgURL; 
 
-    background.onload = function(){
+    background.onload = () => {
         ctx.drawImage(background,0,0);
         ctx.font = "4em Impact";
-        drawStroked(ctx, "Upper Meme", 250, 65);
-        drawStroked(ctx, "Lower Meme", 250, 420);
-        var d=c.toDataURL("image/png");
+        drawStroked(ctx, "Upper Meme", 230, 70);
+        drawStroked(ctx, "Lower Meme", 230, 430);
+        var d = c.toDataURL("image/png");
         console.log(d);
     }
 }
+
+
+
+
+/******************************* Stable *************************************/
+
+
+
+
+
 
 /**
  * When user double clicks the text, add an input field to allow user to change
@@ -85,9 +97,8 @@ function textHandleDblclick(pos) {
         `background-color: rgba(192,192,192, 0.5);
          border: 2px dashed black;`);
 
-        let input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('value', tmp.innerHTML);
+        let input = document.createElement('textarea');
+        input.value = tmp.innerHTML;
 
         function inputHandleComplete() {
             tmp.removeChild(input);
@@ -102,11 +113,19 @@ function textHandleDblclick(pos) {
         input.addEventListener('keypress', (e)=>{
             if(e.keyCode === 13) input.blur();
         });
+        input.addEventListener('keyup', ()=>{
+            input.style.height = '1px';
+            let old = input.style.height;
+            input.style.height = (25+input.scrollHeight)+"px";
+            if(old !== input.style.height) {
+                tmp.style.height = (25+input.scrollHeight)+"px";
+            }
+        });
         tmp.innerHTML = '';
         tmp.appendChild(input);
         document.querySelector('#memeContainer').replaceChild(tmp, textBox);
 
-        let len = input.value.length;
+        let len = input.innerHTML.length;
         input.setSelectionRange(len, len);
     };
 }

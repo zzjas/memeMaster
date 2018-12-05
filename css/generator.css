@@ -23,9 +23,10 @@
      3px -3px 0 #000,
     -3px  3px 0 #000,
      3px  3px 0 #000;
-     border: 1px dashed gray;
-     width: 499px;
-     padding: 0;
+    border: 1px dashed gray;
+    width: 499px;
+    height: 80px;
+    padding: 0;
     cursor: pointer;
 }
 
@@ -37,7 +38,7 @@
     bottom: 3px;
 }
 
-.memeText input {
+.memeText textarea {
     background-color: transparent;
     border:none;
     text-align: center;
@@ -49,10 +50,12 @@
      3px -3px 0 #000,
     -3px  3px 0 #000,
      3px  3px 0 #000;
+     height: 100%;
      width: 100%;
+     resize: none
 }
 
-.memeText input:focus {
+.memeText textarea:focus {
     outline: none;
     caret-color: black;
 }
