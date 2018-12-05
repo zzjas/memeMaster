@@ -64,3 +64,4 @@ typings/
 *.code-workspace
 .idea
 .DS_Store
+.firebase/hosting..cache
