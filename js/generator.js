@@ -33,8 +33,6 @@ window.addEventListener('load', ()=> main() );
 
 
 
-
-
 /**
  * Render the image with canvas
  */
