@@ -16,7 +16,7 @@
   },
   // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
   signInFlow: 'popup',
-  signInSuccessUrl: 'generator.html',
+  signInSuccessUrl: 'index.html',
   signInOptions: [
     // Leave the lines as is for the providers you want to offer your users.
     // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -29,7 +29,7 @@
   // Terms of service url.
   tosUrl: '<your-tos-url>',
   // Privacy policy url.
-  privacyPolicyUrl: 'generator.html'
+  privacyPolicyUrl: 'index.html'
 };
 ui.start('#firebaseui-auth-container', uiConfig);
 })()
