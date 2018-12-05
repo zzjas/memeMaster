@@ -1,3 +1,5 @@
+import * as download from './download.js';
+
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 
 function main() {
@@ -49,8 +51,10 @@ function handleGenerate() {
     background.onload = () => {
         ctx.drawImage(background,0,0);
         ctx.font = '4em Impact';
-        drawStroked(ctx, 'Upper Meme', 230, 70);
-        drawStroked(ctx, 'Lower Meme', 230, 430);
+        let upper = document.querySelector('#topText').innerHTML;
+        let lower = document.querySelector('#bottomText').innerHTML;
+        drawStroked(ctx, upper, 230, 70);
+        drawStroked(ctx, lower, 230, 430);
         let newImgDataURI = c.toDataURL('image/png');
         uploadRenderedImg(newImgDataURI);
     };
@@ -77,16 +81,10 @@ function openDialog(url) {
     meme.addEventListener('load', ()=>{ dialog.showModal(); });
 
     dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
-        let link = document.createElement('a');
-        link.href = url;
-        document.body.appendChild(link);
-        link.download = '';
-        link.click();
-        document.body.removeChild(link);
+        download.downloadImage(url);
     });
 
     dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
-        let save = document.querySelector('#succSaveButton');
     });
     dialog.querySelector('#succDiscardButton').addEventListener('click', ()=>{
         let d = document.querySelector('dialog');
