@@ -1,8 +1,30 @@
 // import * as download from './download.js';
 
+var app_main = {};
+
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 
 function main() {
+    // // handle login & logout
+    // var firebase = app_firebase;
+    // var uid = null;
+    // firebase.auth().onAuthStateChanged(function(user) {
+    //     if (user) {
+    //         // User is signed in.
+    //         uid = user.uid;
+    //     } else {
+    //         // redirect to login page
+    //         uid = null;
+    //         window.location.replace("login.html");
+    //     }
+    // });
+
+    // function logOut(){
+    //     firebase.auth().signOut();
+    // }
+
+    // app_main.logOut = logOut;
+
     // Put default or last meme as placeholder
     document.querySelector('#memeImg').src= imgURL;
 
@@ -197,27 +219,3 @@ function uploadHandleComplete(info) {
     localStorage.setItem('currMeme', imgURL);
     window.location.href = window.location.href;
 }
-
-// handle login
-var app_main = {};
-
-(function(){
-    var firebase = app_firebase;
-    var uid = null;
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            // User is signed in.
-            uid = user.uid;
-        } else {
-            // redirect to login page
-            uid = null;
-            window.location.replace("login.html");
-        }
-    });
-
-    function logOut(){
-        firebase.auth().signOut();
-    }
-
-    app_main.logOut = logOut;
-})()
