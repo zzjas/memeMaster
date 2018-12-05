@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Meme Master</title>
+    <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
     <script src="./js/settings.js"></script>
     <script charset="utf-8" src="https://ucarecdn.com/libs/widget/3.6.1/uploadcare.full.min.js"></script>
     <script src="https://ucarecdn.com/libs/widget-tab-effects/1.x/uploadcare.tab-effects.js"></script>
@@ -12,61 +13,63 @@
     <link rel="stylesheet" href="./css/generator.css">
 </head>
 <body>
-   <header>
-       <button id="myMemeButton" style="display:none">My Meme</button>
-       <button id="accountButton" style="display:none">Account</button>
-       <button id="signupButton">Sign Up</button>
-       <button id="loginButton">Log In</button>
-       <button id="shareButton">Share</button>
-       <p id="support"></p>
-   </header> 
-   <main>
-       <div id="uploadContainer">
-            <input id="uploadButton"
-                type="hidden"
-                role="uploadcare-uploader"
-                name="content"
-                data-crop="1:1">
-       </div>
+    <header>
+      <button id="myMemeButton" style="display:none">My Meme</button>
+      <button id="accountButton" style="display:none">Account</button>
+      <button onclick="app_main.logOut()">logOut</button>
+      <button id="signupButton">Sign Up</button>
+      <button id="loginButton">Log In</button>
+      <button id="shareButton">Share</button>
+      <p id="support"></p>
+    </header> 
+    <main>
+      <div id="uploadContainer">
+        <input id="uploadButton"
+               type="hidden"
+               role="uploadcare-uploader"
+               name="content"
+               data-crop="1:1">
+      </div>
 
-       <div id="memeContainer">
-           <img id="memeImg" alt="Meme">
-           <div id="topText" class="memeText">Upper Meme</div>
-           <div id="bottomText" class="memeText">Lower Meme</div>
-       </div>
-       <button id="generateButton">Generate</button>
-       <canvas id="myCanvas" style="display:none;"></canvas>
-   </main>
+      <div id="memeContainer">
+        <img id="memeImg" alt="Meme">
+        <div id="topText" class="memeText">Upper Meme</div>
+        <div id="bottomText" class="memeText">Lower Meme</div>
+      </div>
+      <button id="generateButton">Generate</button>
+      <canvas id="myCanvas" style="display:none;"></canvas>
+    </main>
 
-   <div style="display: none">
-       Icons made by
-       <a href="https://www.flaticon.com/authors/maxim-basinski" title="Maxim Basinski">
-            Maxim Basinski
-       </a> from 
-       <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+    <div style="display: none">
+      Icons made by
+      <a href="https://www.flaticon.com/authors/maxim-basinski" title="Maxim Basinski">
+           Maxim Basinski
+      </a> from 
+      <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
         is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-   </div>
-   <template>
-        <dialog>
-            <img src="" alt="Your Meme">
-            <button id="succDownloadButton">
-                <img src="./img/download.svg">
-                Download
-            </button>
-            <button id="succShareButton">
-                <img src="./img/share.svg">
-                Share
-            </button>
-            <button id="succSaveButton">
-                <img src="./img/save.svg">
-                Save to Account
-            </button>
-            <button id="succDiscardButton">
-                <img src="./img/trash.svg">
-                Discard
-            </button>
-        </dialog>
+    </div>
+    <template>
+      <dialog>
+        <img src="" alt="Your Meme">
+        <button id="succDownloadButton">
+          <img src="./img/download.svg">
+            Download
+        </button>
+        <button id="succShareButton">
+          <img src="./img/share.svg">
+            Share
+        </button>
+        <button id="succSaveButton">
+          <img src="./img/save.svg">
+            Save to Account
+        </button>
+        <button id="succDiscardButton">
+          <img src="./img/trash.svg">
+            Discard
+        </button>
+      </dialog>
    </template>
+   <script src="firebase.js"></script>
    <script src="./js/share.js"></script>
 </body>
 </html>
