@@ -26,9 +26,12 @@
             "always"
         ],
         "no-console": ["error", { "allow": ["warn", "error"] }],
-        "no-self-assign": ["error", {"props": false}]
+        "no-self-assign": ["error", {"props": false}],
+        "no-unused-vars": ["error", { "vars": "local", "args": "after-used", "ignoreRestSiblings": false }]
     },
     "globals": {
-        "uploadcare": true
+        "uploadcare": true,
+        "app_firebase": true,
+        "firebase": true
     }
 }

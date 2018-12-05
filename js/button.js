@@ -13,3 +13,10 @@ export function downloadImage(url) {
         a.click();
     };
 }
+
+
+export function gotoURL(url) {
+    return function t() {
+        window.location.href = url;
+    };
+}

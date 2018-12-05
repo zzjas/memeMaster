@@ -1,29 +1,15 @@
-// import * as download from './download.js';
-
-var app_main = {};
+import * as button from './button.js';
+import * as share from './share.js';
 
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
+let firebase = app_firebase;
+let uid = null;
 
 function main() {
-    // // handle login & logout
-    // var firebase = app_firebase;
-    // var uid = null;
-    // firebase.auth().onAuthStateChanged(function(user) {
-    //     if (user) {
-    //         // User is signed in.
-    //         uid = user.uid;
-    //     } else {
-    //         // redirect to login page
-    //         uid = null;
-    //         window.location.replace("login.html");
-    //     }
-    // });
+    // handle login & logout
 
-    // function logOut(){
-    //     firebase.auth().signOut();
-    // }
+    firebase.auth().onAuthStateChanged(checkSignIn);
 
-    // app_main.logOut = logOut;
 
     // Put default or last meme as placeholder
     document.querySelector('#memeImg').src= imgURL;
@@ -50,6 +36,39 @@ function main() {
 window.addEventListener('load', ()=> main() );
 
 
+function checkSignIn(user) {
+    let accountButton = document.querySelector('#accountButton');
+    let myMemeButton = document.querySelector('#myMemeButton');
+    let logoutButton = document.querySelector('#logoutButton');
+    let signupButton = document.querySelector('#signupButton');
+    let loginButton = document.querySelector('#loginButton');
+
+    if(user) {
+        uid = user;
+        accountButton.style.display = '';
+        myMemeButton.style.display = '';
+        logoutButton.style.display = '';
+        signupButton.style.display = 'none';
+        loginButton.style.display = 'none';
+
+        myMemeButton.addEventListener('click', button.gotoURL('./myMeme.html'));
+        logoutButton.addEventListener('click', ()=>{
+            firebase.auth().signOut();
+            window.location.href = window.location.href;
+        });
+    }
+    else {
+        // Not signed in
+        if(accountButton.style.display !== 'none') accountButton.style.display = 'none';
+        if(myMemeButton.style.display !== 'none') myMemeButton.style.display = 'none';
+        if(logoutButton.style.display !== 'none') logoutButton.style.display = 'none';
+        signupButton.style.display = '';
+        loginButton.style.display = '';
+        
+        signupButton.addEventListener('click', button.gotoURL('./login.html'));
+        loginButton.addEventListener('click', button.gotoURL('./login.html'));
+    }
+}
 
 
 
@@ -100,18 +119,34 @@ function openDialog(url) {
     meme.setAttribute('src', url);
     meme.addEventListener('load', ()=>{ dialog.showModal(); });
 
-    // dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
-    //     download.downloadImage(url);
-    // });
+    dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
+        button.downloadImage(url);
+        discard();
+    });
+
+    let shareButton = dialog.querySelector('#succShareButton');
+    let shareFail = dialog.querySelector('#shareFail');
+    share.initShare(shareButton, shareFail);
+
 
     dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
     });
-    dialog.querySelector('#succDiscardButton').addEventListener('click', ()=>{
+    dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
+
+    function discard() {
         let d = document.querySelector('dialog');
         d.parentElement.removeChild(d);
-    });
+    }
     document.body.appendChild(dialog);
 }
+
+
+
+
+
+
+
+
 
 
 

@@ -15,10 +15,9 @@
     <header>
       <button id="myMemeButton" style="display:none">My Meme</button>
       <button id="accountButton" style="display:none">Account</button>
-      <button onclick="app_main.logOut()">logOut</button>
-      <button id="signupButton">Sign Up</button>
-      <button id="loginButton">Log In</button>
-      <button id="shareButton">Share</button>
+      <button id="signupButton" style="display:none">Sign Up</button>
+      <button id="loginButton" style="display:none">Log In</button>
+      <button id="logoutButton" style="display:none">logOut</button>
       <p id="support"></p>
     </header> 
     <main>
@@ -39,15 +38,6 @@
       <canvas id="myCanvas" style="display:none;"></canvas>
     </main>
 
-    <div style="display: none">
-      Icons made by
-      <a href="https://www.flaticon.com/authors/maxim-basinski" title="Maxim Basinski">
-           Maxim Basinski
-      </a> from 
-      <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-        is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-    </div>
-
     <template>
       <dialog>
         <img src="" alt="Your Meme">
@@ -59,6 +49,7 @@
           <img src="./img/share.svg">
             Share
         </button>
+        <p id="shareFail" style="display: none;"></p>
         <button id="succSaveButton">
           <img src="./img/save.svg">
             Save to Account
@@ -70,7 +61,6 @@
       </dialog>
    </template>
    <script src="./js/firebase.js"></script>
-   <script src="./js/share.js"></script>
-   <script src="./js/generator.js"></script>
+   <script src="./js/generator.js" type="module"></script>
 </body>
 </html>
