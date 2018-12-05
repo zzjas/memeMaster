@@ -26,36 +26,18 @@ function main() {
 window.addEventListener('load', ()=> main() );
 
 
-function drawStroked(ctx, text, x, y) {
-	ctx.textAlign = "center";
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 7;
-    ctx.strokeText(text, x, y);
-    ctx.fillStyle = 'white';
-    ctx.fillText(text, x, y);
-}
+
+
+
+
+
+
 
 /**
  * Render the image with canvas
  */
 function handleGenerate() {
-    let tt = document.querySelector('#topText');
-    let bt = document.querySelector('#bottomText');
-    let img = document.querySelector('#memeImg');
-
-
-    let topTextOffset = {
-        top: tt.offsetTop - img.offsetTop,
-        left: tt.offsetLeft - img.offsetLeft
-    }
-    let bottomTextOffset = {
-        top: bt.offsetTop - img.offsetTop,
-        left: bt.offsetLeft - img.offsetLeft
-    }
-    console.log(topTextOffset);
-    console.log(bottomTextOffset);
-
-
+    document.querySelector('#generateButton').innerHTML = 'Generating...';
     let c = document.querySelector('#myCanvas');
     let ctx = c.getContext("2d");
     ctx.canvas.width = 500;
@@ -70,9 +52,7 @@ function handleGenerate() {
         drawStroked(ctx, "Upper Meme", 230, 70);
         drawStroked(ctx, "Lower Meme", 230, 430);
         let newImgDataURI = c.toDataURL("image/png");
-
         uploadRenderedImg(newImgDataURI);
-
     }
 }
 
@@ -108,10 +88,30 @@ function uploadRenderedImg(newImgDataURI) {
         let p = document.createElement('p');
         p.innerHTML = `Rendered: <a href="${fileInfo.cdnUrl}" target="_blank">${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
+        document.querySelector('#generateButton').innerHTML = 'Generate';
     }).fail(()=>{
         console.log('Upload Failed');
     });
 }
+
+
+/**
+ * Helper function for drawing text on image. 
+ * @param {Canvas context} ctx 
+ * @param {string} text 
+ * @param {number} x 
+ * @param {number} y 
+ */
+function drawStroked(ctx, text, x, y) {
+	ctx.textAlign = "center";
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 7;
+    ctx.strokeText(text, x, y);
+    ctx.fillStyle = 'white';
+    ctx.fillText(text, x, y);
+}
+
+
 
 /**
  * When user double clicks the text, add an input field to allow user to change
