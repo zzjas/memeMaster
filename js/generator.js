@@ -201,23 +201,23 @@ function uploadHandleComplete(info) {
 // handle login
 var app_main = {};
 
-// (function(){
-//     var firebase = app_firebase;
-//     var uid = null;
-//     firebase.auth().onAuthStateChanged(function(user) {
-//         if (user) {
-//             // User is signed in.
-//             uid = user.uid;
-//         } else {
-//             // redirect to login page
-//             uid = null;
-//             window.location.replace("login.html");
-//         }
-//     });
+(function(){
+    var firebase = app_firebase;
+    var uid = null;
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // User is signed in.
+            uid = user.uid;
+        } else {
+            // redirect to login page
+            uid = null;
+            window.location.replace("login.html");
+        }
+    });
 
-//     function logOut(){
-//         firebase.auth().signOut();
-//     }
+    function logOut(){
+        firebase.auth().signOut();
+    }
 
-//     app_main.logOut = logOut;
-// })()
+    app_main.logOut = logOut;
+})()
