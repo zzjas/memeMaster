@@ -72,11 +72,18 @@ function handleGenerate() {
 function openDialog(url) {
     let t= document.getElementsByTagName('template')[0];
     let dialog = t.content.querySelector('dialog').cloneNode(true);
-    //console.warn(dialog);
-    console.warn(dialog.querySelector('img'));
     let meme = dialog.querySelector('img'); 
     meme.setAttribute('src', url);
     meme.addEventListener('load', ()=>{ dialog.showModal(); });
+
+    dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
+        let link = document.createElement('a');
+        link.href = url;
+        document.body.appendChild(link);
+        link.download = '';
+        link.click();
+        document.body.removeChild(link);
+    });
 
     dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
         let save = document.querySelector('#succSaveButton');
