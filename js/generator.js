@@ -39,7 +39,7 @@ window.addEventListener('load', ()=> main() );
 function handleGenerate() {
     document.querySelector('#generateButton').innerHTML = 'Generating...';
     let c = document.querySelector('#myCanvas');
-    let ctx = c.getContext("2d");
+    let ctx = c.getContext('2d');
     ctx.canvas.width = 500;
     ctx.canvas.height = 500;
     let background = new Image();
@@ -48,12 +48,12 @@ function handleGenerate() {
 
     background.onload = () => {
         ctx.drawImage(background,0,0);
-        ctx.font = "4em Impact";
-        drawStroked(ctx, "Upper Meme", 230, 70);
-        drawStroked(ctx, "Lower Meme", 230, 430);
-        let newImgDataURI = c.toDataURL("image/png");
+        ctx.font = '4em Impact';
+        drawStroked(ctx, 'Upper Meme', 230, 70);
+        drawStroked(ctx, 'Lower Meme', 230, 430);
+        let newImgDataURI = c.toDataURL('image/png');
         uploadRenderedImg(newImgDataURI);
-    }
+    };
 }
 
 
@@ -86,11 +86,11 @@ function uploadRenderedImg(newImgDataURI) {
 
     newImg.done((fileInfo)=>{
         let p = document.createElement('p');
-        p.innerHTML = `Rendered: <a href="${fileInfo.cdnUrl}" target="_blank">${fileInfo.cdnUrl}</a>`;
+        p.innerHTML = `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
         document.querySelector('#generateButton').innerHTML = 'Generate';
     }).fail(()=>{
-        console.log('Upload Failed');
+        console.error('Upload Failed');
     });
 }
 
@@ -103,7 +103,7 @@ function uploadRenderedImg(newImgDataURI) {
  * @param {number} y 
  */
 function drawStroked(ctx, text, x, y) {
-	ctx.textAlign = "center";
+    ctx.textAlign = 'center';
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 7;
     ctx.strokeText(text, x, y);
@@ -120,11 +120,11 @@ function drawStroked(ctx, text, x, y) {
  */
 function textHandleDblclick(pos) {
     let textBox = document.querySelector(`#${pos}Text`);
-    return function handler(e) {
+    return function handler() {
         let tmp = textBox.cloneNode(true);
         tmp.setAttribute('style',
-        `background-color: rgba(192,192,192, 0.5);
-         border: 2px dashed black;`);
+            `background-color: rgba(192,192,192, 0.5);
+             border: 2px dashed black;`);
 
         let input = document.createElement('textarea');
         input.value = tmp.innerHTML;
@@ -136,7 +136,7 @@ function textHandleDblclick(pos) {
             tmp.setAttribute('style',
                 `background-color: transparent;
                  border: 1px dashed gray;`);
-        };
+        }
 
         input.addEventListener('blur', inputHandleComplete); 
         input.addEventListener('keypress', (e)=>{
@@ -145,9 +145,9 @@ function textHandleDblclick(pos) {
         input.addEventListener('keyup', ()=>{
             input.style.height = '1px';
             let old = input.style.height;
-            input.style.height = (25+input.scrollHeight)+"px";
+            input.style.height = (25+input.scrollHeight)+'px';
             if(old !== input.style.height) {
-                tmp.style.height = (25+input.scrollHeight)+"px";
+                tmp.style.height = (25+input.scrollHeight)+'px';
             }
         });
         tmp.innerHTML = '';
@@ -157,14 +157,6 @@ function textHandleDblclick(pos) {
         let len = input.innerHTML.length;
         input.setSelectionRange(len, len);
     };
-}
-
-/**
- * Change the text on button while uploading
- * @param {object} file 
- */
-function uploadHandleChange(file) {
-    document.querySelector('button.uploadcare--widget__button_type_open').innerHTML = 'Uploading...';
 }
 
 /**
