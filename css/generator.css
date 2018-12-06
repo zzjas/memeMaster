@@ -74,6 +74,7 @@ dialog {
 
 dialog img {
     margin: auto;
+    width: 500px;
 }
 
 dialog button {

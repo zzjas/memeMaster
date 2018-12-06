@@ -1,13 +1,17 @@
+body {
+    text-align: center;
+}
 .tablePanel {
     display: inline-block;
     position: relative;
+    margin: 20px;
 }
 
 .tablePanel .meme {
     z-index: 1;
-    width: 300px;
+    width: 200px;
     display: block;
-    height: 100%;
+    height: auto;
 }
 
 .tablePanel .icon {
@@ -44,22 +48,35 @@
 .listPanel {
     display: block;
     width: 85%;
-    text-align:center
+    text-align:center;
+    margin: 20px;
 }
 
 .listPanel .meme {
     display: inline-block;
-    width: 30%;
+    width: 300px;
+    height: auto;
+    vertical-align: middle;
 }
 
-
-#listButtons {
+.listPanel .right {
+    display: inline-block;
     width: 40%;
+    vertical-align: middle;
+}
+
+.listPanel .title {
     display: inline-block;
 }
 
+.listButtons {
+    display: inline-block;
+}
+
+
+
 .listPanel .icon {
-    width: 80%;
+    width: 50%;
 }
 .listPanel button {
     width: 20%;

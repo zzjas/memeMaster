@@ -1,4 +1,5 @@
 import * as db from './firebase.js';
+import * as button from './button.js';
 
 let uid = null;
 let memeList = [];
@@ -19,15 +20,71 @@ function main() {
     document.querySelector('#toggleView').addEventListener('click', handleToggleView);
 }
 
+
+
+
 window.addEventListener('load', main);
 
+
+
+
 function renderList() {
-    renderTmp('#listTmp');
+    memeList.forEach(memeInfo => {
+        let panel = document.createElement('div');
+        panel.setAttribute('class', 'listPanel panel');
+
+        let meme = new Image();
+        meme.setAttribute('class', 'meme');
+        meme.addEventListener('load', ()=>{
+            panel.appendChild(meme);
+            let right = document.createElement('div');
+            right.setAttribute('class', 'right');
+
+            let title = document.createElement('p');
+            title.setAttribute('class', 'title');
+            title.innerHTML = 'Title Here';
+            right.appendChild(title);
+
+            let bs = document.createElement('div');
+            bs.setAttribute('class', 'listButtons');
+            bs.appendChild(button.createButton('trash'));
+            bs.appendChild(button.createButton('edit'));
+            bs.appendChild(button.createButton('share'));
+
+            let dB = button.createButton('download');
+            dB.addEventListener('click', button.generateDownloadHandler(memeInfo.url));
+            bs.appendChild(dB);
+            right.appendChild(bs);
+            panel.appendChild(right);
+            document.querySelector('main').appendChild(panel);
+        });
+        meme.src = memeInfo.url;
+    });
 }
 
 function renderTable() {
-    renderTmp('#tableTmp');
+    memeList.forEach(memeInfo => {
+        let panel = document.createElement('div');
+        panel.setAttribute('class', 'tablePanel panel');
+
+        let meme = new Image();
+        meme.setAttribute('class', 'meme');
+        meme.addEventListener('load', ()=>{
+            panel.appendChild(meme);
+            panel.appendChild(button.createButton('setting'));
+            panel.appendChild(button.createButton('share'));
+
+            let dB = button.createButton('download');
+            dB.addEventListener('click', button.generateDownloadHandler(memeInfo.url));
+            panel.appendChild(dB);
+
+            document.querySelector('main').appendChild(panel);
+        });
+        meme.src = memeInfo.url;
+    });
 }
+
+
 
 function checkView() {
     let b = document.querySelector('#toggleView');
@@ -45,24 +102,13 @@ function checkView() {
 
 function removePanels() {
     let m = document.querySelector('main');
+    /*
     let ps = m.querySelectorAll('.panel');
     ps.forEach(e => {
         m.removeChild(e);
     });
-}
-
-function renderTmp(tmp) {
-    memeList.forEach(memeInfo => {
-        let panel = document.querySelector(tmp).content.querySelector('div').cloneNode(true);
-
-        let meme = panel.querySelector('.meme');
-        meme.src = memeInfo.url;
-        panel.style.visibility = 'hidden';
-        meme.addEventListener('load', ()=>{
-            panel.style.visibility = 'visible';
-        });
-        document.querySelector('main').appendChild(panel);
-    });
+    */
+    m.innerHTML = '';
 }
 
 

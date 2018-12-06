@@ -5,6 +5,7 @@ import * as db from './firebase.js';
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 let firebase = app_firebase;
 let uid = null;
+let size = 1000;
 
 function main() {
     // handle login & logout
@@ -53,27 +54,18 @@ function handleGenerate() {
     let c = document.querySelector('#myCanvas');
     let ctx = c.getContext('2d');
 
-    //ctx.canvas.width = img.naturalWidth;
-    //ctx.canvas.height = img.naturalHeight;
+    ctx.canvas.width = img.naturalWidth;
+    ctx.canvas.height = img.naturalHeight;
 
-    ctx.canvas.width = 500;
-    ctx.canvas.height = 500;
-
-    let background = new Image();
-    background.crossOrigin = 'anonymous';
-    //background.src = imgURL; 
-
-    //background.onload = () => {
-        //ctx.drawImage(background,0,0);
-        ctx.drawImage(img,0,0);
-        ctx.font = '4em Impact';
-        let upper = document.querySelector('#topText').innerHTML;
-        let lower = document.querySelector('#bottomText').innerHTML;
-        drawStroked(ctx, upper, 230, 70);
-        drawStroked(ctx, lower, 230, 430);
-        let newImgDataURI = c.toDataURL('image/png');
-        uploadRenderedImg(newImgDataURI);
-    //};
+    //ctx.drawImage(background,0,0);
+    ctx.drawImage(img,0,0);
+    ctx.font = '8em Impact';
+    let upper = document.querySelector('#topText').innerHTML;
+    let lower = document.querySelector('#bottomText').innerHTML;
+    drawStroked(ctx, upper, ctx.canvas.width * 0.46, img.naturalHeight * 0.14);
+    drawStroked(ctx, lower, ctx.canvas.width * 0.46, img.naturalHeight * 0.93);
+    let newImgDataURI = c.toDataURL('image/png');
+    uploadRenderedImg(newImgDataURI);
 }
 
 
@@ -102,7 +94,7 @@ function openDialog(url) {
     meme.addEventListener('load', ()=>{ dialog.showModal(); });
 
     dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
-        button.downloadImage(url);
+        button.generateDownloadHandler(url)();
         discard();
     });
 
@@ -228,7 +220,7 @@ function checkSignIn(user) {
         signupButton.style.display = 'none';
         loginButton.style.display = 'none';
 
-        myMemeButton.addEventListener('click', button.gotoURL('./myMeme.html'));
+        myMemeButton.addEventListener('click', button.generateGoToURLHandler('./myMeme.html'));
         logoutButton.addEventListener('click', ()=>{
             firebase.auth().signOut();
             window.location.href = window.location.href;
@@ -243,8 +235,8 @@ function checkSignIn(user) {
         signupButton.style.display = '';
         loginButton.style.display = '';
         
-        signupButton.addEventListener('click', button.gotoURL('./login.html'));
-        loginButton.addEventListener('click', button.gotoURL('./login.html'));
+        signupButton.addEventListener('click', button.generateGoToURLHandler('./login.html'));
+        loginButton.addEventListener('click', button.generateGoToURLHandler('./login.html'));
     }
 }
 
@@ -275,6 +267,7 @@ function drawStroked(ctx, text, x, y) {
  */
 function uploadHandleComplete(info) {
     imgURL = info.cdnUrl;
+    imgURL += `-/resize/${size}x${size}/`;
     localStorage.setItem('currMeme', imgURL);
     window.location.href = window.location.href;
 }

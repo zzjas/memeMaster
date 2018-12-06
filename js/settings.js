@@ -14,6 +14,10 @@ var config = {
     storageBucket: 'meme-master-177fb.appspot.com',
     messagingSenderId: '1043399803617'
 };
+
 var app_firebase = {};
 firebase.initializeApp(config);
 app_firebase = firebase;
+app_firebase['haha'] = ()=>{
+    console.log('From setting');
+};

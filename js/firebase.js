@@ -34,7 +34,7 @@ export function getAllMemes(uid) {
     for(let i = 0; i < 10; i++) {
         let d = new Date();
         memeList.push({
-            url: 'https://ucarecdn.com/02b365a4-c292-4329-92a8-97b49240ab26/',
+            url: 'https://ucarecdn.com/5aefa9c4-c57a-4208-af28-1cdbc89146b5/',
             date: d
         });
     }
