@@ -2,7 +2,7 @@ import * as db from './firebase.js';
 
 let uid = null;
 let memeList = [];
-let tableView = localStorage['tableView'] || true;
+let tableView = localStorage['tableView'] ? parseInt(localStorage['tableView']) : 1;
 
 function main() {
     // Confirm login information
@@ -67,14 +67,8 @@ function renderTmp(tmp) {
 
 
 function handleToggleView() {
-    if(tableView) {
-        tableView = false;
-        localStorage.setItem('tableView', tableView);
-    }
-    else {
-        tableView = true;
-        localStorage.setItem('tableView', tableView);
-    }
+    tableView = tableView ? 0:1;
+    localStorage.setItem('tableView', tableView);
     checkView();
 }
 

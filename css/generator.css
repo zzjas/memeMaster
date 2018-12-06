@@ -1,7 +1,13 @@
+body {
+    text-align: center;
+}
+
 #memeContainer {
     margin: auto;
-    width: 45%;
     position: relative;
+    text-align: center;
+    width: 500px;
+    height: 500px;
 }
 
 #memeImg {

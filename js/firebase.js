@@ -15,12 +15,19 @@ function aasdasd(){
 }
 */
 
-export function saveToAccount(raw, rendered, top, bottom, offset) {
+
+export function storeNewMeme(uid, fileName, raw, rendered, top, bottom, offset, editable, date) {
+    let title = '';
+    // Generate a title by count
     return 1;
 }
 
+export function updateMeme(uid, title, rendered, top, bottom, offset, date) {
+
+}
+
 export function getAllMemes(uid) {
-    // return rendered
+    // return a list of {title, rendered, editable, date}
 
     // Fake data for testing
     let memeList = [];
@@ -34,12 +41,11 @@ export function getAllMemes(uid) {
     return memeList;
 }
 
-export function getSingleMeme(uid, rendered) {
+export function getSingleMeme(uid, title) {
     return {
-        raw: AudioDestinationNode,
-        rendered: ANGLE_instanced_arrays,
-        top: asdasfda,
-        bottom: dasasdad,
-        offset: dasdasdad
+        rendered: '',
+        top: '',
+        bottom: '',
+        offset: ''
     };
 }

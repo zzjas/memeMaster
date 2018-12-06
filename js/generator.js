@@ -13,7 +13,9 @@ function main() {
 
 
     // Put default or last meme as placeholder
-    document.querySelector('#memeImg').src= imgURL;
+    let memeImg = document.querySelector('#memeImg');
+    memeImg.crossOrigin = 'anonymous';
+    memeImg.src= imgURL;
 
     let p = document.createElement('p');
     p.innerHTML = `Raw: <a href="${imgURL}" target="_blank">${imgURL}</a>`;
@@ -37,41 +39,6 @@ function main() {
 window.addEventListener('load', ()=> main() );
 
 
-function checkSignIn(user) {
-    let accountButton = document.querySelector('#accountButton');
-    let myMemeButton = document.querySelector('#myMemeButton');
-    let logoutButton = document.querySelector('#logoutButton');
-    let signupButton = document.querySelector('#signupButton');
-    let loginButton = document.querySelector('#loginButton');
-
-    if(user) {
-        uid = user;
-        accountButton.style.display = '';
-        myMemeButton.style.display = '';
-        logoutButton.style.display = '';
-        signupButton.style.display = 'none';
-        loginButton.style.display = 'none';
-
-        myMemeButton.addEventListener('click', button.gotoURL('./myMeme.html'));
-        logoutButton.addEventListener('click', ()=>{
-            firebase.auth().signOut();
-            window.location.href = window.location.href;
-        });
-    }
-    else {
-        // Not signed in
-        uid = null;
-        if(accountButton.style.display !== 'none') accountButton.style.display = 'none';
-        if(myMemeButton.style.display !== 'none') myMemeButton.style.display = 'none';
-        if(logoutButton.style.display !== 'none') logoutButton.style.display = 'none';
-        signupButton.style.display = '';
-        loginButton.style.display = '';
-        
-        signupButton.addEventListener('click', button.gotoURL('./login.html'));
-        loginButton.addEventListener('click', button.gotoURL('./login.html'));
-    }
-}
-
 
 
 
@@ -81,16 +48,24 @@ function checkSignIn(user) {
  */
 function handleGenerate() {
     document.querySelector('#generateButton').innerHTML = 'Generating...';
+
+    let img = document.querySelector('#memeImg');
     let c = document.querySelector('#myCanvas');
     let ctx = c.getContext('2d');
+
+    //ctx.canvas.width = img.naturalWidth;
+    //ctx.canvas.height = img.naturalHeight;
+
     ctx.canvas.width = 500;
     ctx.canvas.height = 500;
+
     let background = new Image();
     background.crossOrigin = 'anonymous';
-    background.src = imgURL; 
+    //background.src = imgURL; 
 
-    background.onload = () => {
-        ctx.drawImage(background,0,0);
+    //background.onload = () => {
+        //ctx.drawImage(background,0,0);
+        ctx.drawImage(img,0,0);
         ctx.font = '4em Impact';
         let upper = document.querySelector('#topText').innerHTML;
         let lower = document.querySelector('#bottomText').innerHTML;
@@ -98,7 +73,7 @@ function handleGenerate() {
         drawStroked(ctx, lower, 230, 430);
         let newImgDataURI = c.toDataURL('image/png');
         uploadRenderedImg(newImgDataURI);
-    };
+    //};
 }
 
 
@@ -109,6 +84,11 @@ function handleGenerate() {
 
 
 /******************************* Helpers ************************************/
+
+
+
+
+
 
 /**
  * Open a success dialog to ask for user's next operation.
@@ -149,9 +129,6 @@ function openDialog(url) {
 
 
 
-
-
-
 /**
  * Turn the data uri to a file-like object in Javascript and upload it to
  * uploadcare.
@@ -174,30 +151,11 @@ function uploadRenderedImg(newImgDataURI) {
         p.innerHTML = `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
 
-        //document.body.innerHTML += `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
-
         document.querySelector('#generateButton').innerHTML = 'Generate';
         openDialog(fileInfo.cdnUrl);
     }).fail(()=>{
         console.error('Upload Failed');
     });
-}
-
-
-/**
- * Helper function for drawing text on image. 
- * @param {Canvas context} ctx 
- * @param {string} text 
- * @param {number} x 
- * @param {number} y 
- */
-function drawStroked(ctx, text, x, y) {
-    ctx.textAlign = 'center';
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 7;
-    ctx.strokeText(text, x, y);
-    ctx.fillStyle = 'white';
-    ctx.fillText(text, x, y);
 }
 
 
@@ -247,6 +205,69 @@ function textHandleDblclick(pos) {
         input.setSelectionRange(len, len);
     };
 }
+
+
+
+/**
+ * Check whether user has signed in and render different buttons on screen
+ * accordingly.
+ * @param {string} user 
+ */
+function checkSignIn(user) {
+    let accountButton = document.querySelector('#accountButton');
+    let myMemeButton = document.querySelector('#myMemeButton');
+    let logoutButton = document.querySelector('#logoutButton');
+    let signupButton = document.querySelector('#signupButton');
+    let loginButton = document.querySelector('#loginButton');
+
+    if(user) {
+        uid = user;
+        accountButton.style.display = '';
+        myMemeButton.style.display = '';
+        logoutButton.style.display = '';
+        signupButton.style.display = 'none';
+        loginButton.style.display = 'none';
+
+        myMemeButton.addEventListener('click', button.gotoURL('./myMeme.html'));
+        logoutButton.addEventListener('click', ()=>{
+            firebase.auth().signOut();
+            window.location.href = window.location.href;
+        });
+    }
+    else {
+        // Not signed in
+        uid = null;
+        if(accountButton.style.display !== 'none') accountButton.style.display = 'none';
+        if(myMemeButton.style.display !== 'none') myMemeButton.style.display = 'none';
+        if(logoutButton.style.display !== 'none') logoutButton.style.display = 'none';
+        signupButton.style.display = '';
+        loginButton.style.display = '';
+        
+        signupButton.addEventListener('click', button.gotoURL('./login.html'));
+        loginButton.addEventListener('click', button.gotoURL('./login.html'));
+    }
+}
+
+/******************************* Canvas  ************************************/
+
+/**
+ * Helper function for drawing text on image. 
+ * @param {Canvas context} ctx 
+ * @param {string} text 
+ * @param {number} x 
+ * @param {number} y 
+ */
+function drawStroked(ctx, text, x, y) {
+    ctx.textAlign = 'center';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 7;
+    ctx.strokeText(text, x, y);
+    ctx.fillStyle = 'white';
+    ctx.fillText(text, x, y);
+}
+
+
+/****************************** UploadCare **********************************/
 
 /**
  * Store the URL of uploaded image into local storage and refresh the page to take effect
