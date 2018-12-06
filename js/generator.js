@@ -60,6 +60,7 @@ function checkSignIn(user) {
     }
     else {
         // Not signed in
+        uid = null;
         if(accountButton.style.display !== 'none') accountButton.style.display = 'none';
         if(myMemeButton.style.display !== 'none') myMemeButton.style.display = 'none';
         if(logoutButton.style.display !== 'none') logoutButton.style.display = 'none';
@@ -131,7 +132,6 @@ function openDialog(url) {
 
 
     dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
-        db.saveToAccount(aads,asdas,asdasd,asda);
     });
     dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
 
@@ -173,6 +173,9 @@ function uploadRenderedImg(newImgDataURI) {
         let p = document.createElement('p');
         p.innerHTML = `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
+
+        //document.body.innerHTML += `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
+
         document.querySelector('#generateButton').innerHTML = 'Generate';
         openDialog(fileInfo.cdnUrl);
     }).fail(()=>{

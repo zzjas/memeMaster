@@ -5,9 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Meme Master</title>
+    <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+    <script src="./js/settings.js"></script>
+    <link rel="stylesheet" href="./css/myMeme.css">
+    <script src="./js/myMeme.js" type="module"></script>
 </head>
 <body>
-    <header></header>
-    <main></main>
+    <header>
+        <a href="./index.html" style="text-decoration: none;">
+            <button id="generateButton">Create a meme</button>
+        </a>
+        <button id="accountButton">Account</button>
+        <button id="toggleView">List</button>
+    </header>
+    <main>
+    </main>
+
+    <template id="tableTmp">
+        <div class="tablePanel panel">
+            <img class="meme">
+            <button class="setting">
+                <img src="./img/setting.svg" class="icon">
+            </button>
+            <button class="share">
+                <img src="./img/share.svg" class="icon">
+            </button>
+            <button class="download">
+                <img src="./img/download.svg" class="icon">
+            </button>
+        </div>
+    </template>
+
+    <template id="listTmp">
+        <div class="listPanel panel">
+            <img class="meme">
+            <div id="listButtons">
+                <button class="delete">
+                    <img src="./img/trash.svg" class="icon">
+                </button>
+                <button class="edit">
+                    <img src="./img/edit.svg" class="icon">
+                </button>
+                <button class="share">
+                    <img src="./img/share.svg" class="icon">
+                </button>
+                <button class="download">
+                    <img src="./img/download.svg" class="icon">
+                </button>
+            </div>
+        </div>
+    </template>
 </body>
 </html>

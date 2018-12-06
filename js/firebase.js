@@ -16,12 +16,22 @@ function aasdasd(){
 */
 
 export function saveToAccount(raw, rendered, top, bottom, offset) {
-    //adas
+    return 1;
 }
 
 export function getAllMemes(uid) {
     // return rendered
-    return [url1, url2, url3];
+
+    // Fake data for testing
+    let memeList = [];
+    for(let i = 0; i < 10; i++) {
+        let d = new Date();
+        memeList.push({
+            url: 'https://ucarecdn.com/02b365a4-c292-4329-92a8-97b49240ab26/',
+            date: d
+        });
+    }
+    return memeList;
 }
 
 export function getSingleMeme(uid, rendered) {
@@ -31,5 +41,5 @@ export function getSingleMeme(uid, rendered) {
         top: asdasfda,
         bottom: dasasdad,
         offset: dasdasdad
-    }
+    };
 }
