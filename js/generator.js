@@ -5,6 +5,13 @@ import * as db from './firebase.js';
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 let firebase = app_firebase;
 let uid = null;
+let imgSize = 500;
+let topInfo = {
+    top: 0, fontSize: 64, text: 'Upper Meme', pos: 0
+};
+let bottomInfo = {
+    top: 417, fontSize: 64, text: 'Lower Meme', pos: 0
+};
 
 function main() {
     // handle login & logout
@@ -22,14 +29,19 @@ function main() {
     document.body.appendChild(p);
     
     // Set up the UploadCare widget
-    let upload = uploadcare.Widget('[role="uploadcare-uploader"]');
-    //upload.onChange(uploadHandleChange);
+    let upload = uploadcare.Widget('#uploadButton');
+    document.querySelectorAll('#uploadButton + div button')[0].innerHTML = 'Upload Picture To Make Meme';
     upload.onUploadComplete(uploadHandleComplete);
 
-    // Allow user to change the text by double clicking on the text
-    document.querySelector('#topText').addEventListener('dblclick', textHandleDblclick('top'));
-    document.querySelector('#bottomText').addEventListener('dblclick', textHandleDblclick('bottom'));
-    
+    let acquire = uploadcare.Widget('#acquireButton');
+    document.querySelectorAll('#acquireButton + div button')[0].innerHTML = 'Upload Meme To Account';
+    acquire.onUploadComplete(acquireHandleComplete);
+
+
+
+    createTextBox('#topText', topInfo);
+    createTextBox('#bottomText', bottomInfo);
+
     // Render the image
     document.querySelector('#generateButton').addEventListener('click', handleGenerate);
 }
@@ -38,11 +50,44 @@ function main() {
 
 window.addEventListener('load', ()=> main() );
 
+function createTextBox(qs, info) {
+    document.getElementById('memeImg').ondragstart = function() { return false; };
+    let textContainer = document.querySelector(qs);
+    let text = textContainer.querySelector('textarea');
+    text.setAttribute('maxlength', '24');
+    let lastHeight = text.scrollHeight;
+    let drag = textContainer.querySelector('.dragLayer');
+
+    text.addEventListener('keyup', ()=>{
+        info.text = text.value;
+        while(text.scrollHeight > lastHeight && info.fontSize > 0) {
+            info.fontSize -= 1;
+            text.setAttribute('style', `font-size: ${info.fontSize}px;`);
+        }
+    });
+
+    drag.addEventListener('dragstart', (e)=>{
+        info.pos = e.screenY;
+    });
+
+    drag.addEventListener('drag', (e)=>{
+        e.preventDefault();
+        let d = e.screenY - info.pos;
+        info.pos = e.screenY;
+        let newPos = info.top + d;
+        if(newPos >=0 && newPos < 417) {
+            info.top = newPos;
+        }
+        textContainer.style.top = info.top+'px';
+    });
+
+}
 
 
 
 
 
+/******************************* Helpers ************************************/
 /**
  * Render the image with canvas
  */
@@ -53,78 +98,26 @@ function handleGenerate() {
     let c = document.querySelector('#myCanvas');
     let ctx = c.getContext('2d');
 
-    //ctx.canvas.width = img.naturalWidth;
-    //ctx.canvas.height = img.naturalHeight;
+    ctx.canvas.width = img.naturalWidth;
+    ctx.canvas.height = img.naturalHeight;
 
-    ctx.canvas.width = 500;
-    ctx.canvas.height = 500;
+    //ctx.drawImage(background,0,0);
+    ctx.drawImage(img,0,0);
+    ctx.textAlign = 'center';
 
-    let background = new Image();
-    background.crossOrigin = 'anonymous';
-    //background.src = imgURL; 
+    let p1 = 500;
+    let tt = (topInfo.top/p1) * ctx.canvas.height + topInfo.fontSize;
+    let bt = (bottomInfo.top/p1) * ctx.canvas.height + topInfo.fontSize;
 
-    //background.onload = () => {
-        //ctx.drawImage(background,0,0);
-        ctx.drawImage(img,0,0);
-        ctx.font = '4em Impact';
-        let upper = document.querySelector('#topText').innerHTML;
-        let lower = document.querySelector('#bottomText').innerHTML;
-        drawStroked(ctx, upper, 230, 70);
-        drawStroked(ctx, lower, 230, 430);
-        let newImgDataURI = c.toDataURL('image/png');
-        uploadRenderedImg(newImgDataURI);
-    //};
+    ctx.font = `${topInfo.fontSize}px Impact`;
+    drawStroked(ctx, topInfo.text, ctx.canvas.width * 0.5, tt, topInfo.fontSize);
+
+    ctx.font = `${bottomInfo.fontSize}px Impact`;
+    drawStroked(ctx, bottomInfo.text, ctx.canvas.width * 0.5, bt, bottomInfo.fontSize);
+
+    let newImgDataURI = c.toDataURL('image/png');
+    uploadRenderedImg(newImgDataURI);
 }
-
-
-
-
-
-
-
-
-/******************************* Helpers ************************************/
-
-
-
-
-
-
-/**
- * Open a success dialog to ask for user's next operation.
- * @param {string} url 
- */
-function openDialog(url) {
-    let t= document.getElementsByTagName('template')[0];
-    let dialog = t.content.querySelector('dialog').cloneNode(true);
-    let meme = dialog.querySelector('img'); 
-    meme.setAttribute('src', url);
-    meme.addEventListener('load', ()=>{ dialog.showModal(); });
-
-    dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
-        button.downloadImage(url);
-        discard();
-    });
-
-    let shareButton = dialog.querySelector('#succShareButton');
-    let shareResult = dialog.querySelector('#shareResult');
-    share.initShare(shareButton, shareResult);
-
-
-    dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
-    });
-    dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
-
-    function discard() {
-        let d = document.querySelector('dialog');
-        d.parentElement.removeChild(d);
-    }
-    document.body.appendChild(dialog);
-}
-
-
-
-
 
 
 
@@ -151,7 +144,6 @@ function uploadRenderedImg(newImgDataURI) {
         p.innerHTML = `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
 
-        document.querySelector('#generateButton').innerHTML = 'Generate';
         openDialog(fileInfo.cdnUrl);
     }).fail(()=>{
         console.error('Upload Failed');
@@ -160,51 +152,39 @@ function uploadRenderedImg(newImgDataURI) {
 
 
 
+
+
+
 /**
- * When user double clicks the text, add an input field to allow user to change
- * the text. After losing the focus, changed input will be stored in the text
- * box.
+ * Open a success dialog to ask for user's next operation.
+ * @param {string} url 
  */
-function textHandleDblclick(pos) {
-    let textBox = document.querySelector(`#${pos}Text`);
-    return function handler() {
-        let tmp = textBox.cloneNode(true);
-        tmp.setAttribute('style',
-            `background-color: rgba(192,192,192, 0.5);
-             border: 2px dashed black;`);
+function openDialog(url) {
+    let t= document.getElementsByTagName('template')[0];
+    let dialog = t.content.querySelector('dialog').cloneNode(true);
+    let meme = dialog.querySelector('img'); 
+    meme.setAttribute('src', url);
+    meme.addEventListener('load', ()=>{ dialog.showModal(); });
 
-        let input = document.createElement('textarea');
-        input.value = tmp.innerHTML;
+    dialog.querySelector('#succDownloadButton').addEventListener('click', button.generateDownloadHandler(url));
 
-        function inputHandleComplete() {
-            tmp.removeChild(input);
-            tmp.innerHTML = input.value;
-            tmp.addEventListener('dblclick', textHandleDblclick('top'));
-            tmp.setAttribute('style',
-                `background-color: transparent;
-                 border: 1px dashed gray;`);
-        }
+    let shareButton = dialog.querySelector('#succShareButton');
+    let shareResult = dialog.querySelector('#shareResult');
+    share.initShare(shareButton, shareResult);
 
-        input.addEventListener('blur', inputHandleComplete); 
-        input.addEventListener('keypress', (e)=>{
-            if(e.keyCode === 13) input.blur();
-        });
-        input.addEventListener('keyup', ()=>{
-            input.style.height = '1px';
-            let old = input.style.height;
-            input.style.height = (25+input.scrollHeight)+'px';
-            if(old !== input.style.height) {
-                tmp.style.height = (25+input.scrollHeight)+'px';
-            }
-        });
-        tmp.innerHTML = '';
-        tmp.appendChild(input);
-        document.querySelector('#memeContainer').replaceChild(tmp, textBox);
 
-        let len = input.innerHTML.length;
-        input.setSelectionRange(len, len);
-    };
+    dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
+    });
+    dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
+
+    function discard() {
+        let d = document.querySelector('dialog');
+        d.parentElement.removeChild(d);
+    }
+    document.querySelector('#generateButton').innerHTML = 'Generate';
+    document.body.appendChild(dialog);
 }
+
 
 
 
@@ -228,7 +208,7 @@ function checkSignIn(user) {
         signupButton.style.display = 'none';
         loginButton.style.display = 'none';
 
-        myMemeButton.addEventListener('click', button.gotoURL('./myMeme.html'));
+        myMemeButton.addEventListener('click', button.generateGoToURLHandler('./myMeme.html'));
         logoutButton.addEventListener('click', ()=>{
             firebase.auth().signOut();
             window.location.href = window.location.href;
@@ -243,13 +223,15 @@ function checkSignIn(user) {
         signupButton.style.display = '';
         loginButton.style.display = '';
         
-        signupButton.addEventListener('click', button.gotoURL('./login.html'));
-        loginButton.addEventListener('click', button.gotoURL('./login.html'));
+        signupButton.addEventListener('click', button.generateGoToURLHandler('./login.html'));
+        loginButton.addEventListener('click', button.generateGoToURLHandler('./login.html'));
     }
 }
 
-/******************************* Canvas  ************************************/
 
+
+
+/******************************* Canvas  ************************************/
 /**
  * Helper function for drawing text on image. 
  * @param {Canvas context} ctx 
@@ -257,24 +239,26 @@ function checkSignIn(user) {
  * @param {number} x 
  * @param {number} y 
  */
-function drawStroked(ctx, text, x, y) {
-    ctx.textAlign = 'center';
+function drawStroked(ctx, text, x, y, fs) {
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 7;
+    ctx.lineWidth = 0.109 * fs;
     ctx.strokeText(text, x, y);
     ctx.fillStyle = 'white';
     ctx.fillText(text, x, y);
 }
-
-
 /****************************** UploadCare **********************************/
-
 /**
  * Store the URL of uploaded image into local storage and refresh the page to take effect
  * @param {object} info 
  */
 function uploadHandleComplete(info) {
     imgURL = info.cdnUrl;
+    imgURL += `-/resize/${imgSize}x${imgSize}/`;
     localStorage.setItem('currMeme', imgURL);
     window.location.href = window.location.href;
+}
+
+function acquireHandleComplete(info) {
+    window.open(info.cdnUrl);
+    window.location.href = './myMeme.html';
 }

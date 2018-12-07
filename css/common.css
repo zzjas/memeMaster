@@ -1,0 +1,16 @@
+header button, #generateButton {
+    background: #157cfc;
+    color: #fff;
+    padding: .4em 1em;
+    margin: 3px;
+    border-radius: 6px;
+    text-align: center;
+    transition: background .3s;
+    width: auto;
+    height: auto;
+    outline:none;
+}
+
+header button:hover, #generateButton:hover {
+    background: #4B93F7;
+}

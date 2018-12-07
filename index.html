@@ -10,6 +10,7 @@
     <script charset="utf-8" src="https://ucarecdn.com/libs/widget/3.6.1/uploadcare.full.min.js"></script>
     <script src="https://ucarecdn.com/libs/widget-tab-effects/1.x/uploadcare.tab-effects.js"></script>
     <link rel="stylesheet" href="./css/generator.css">
+    <link rel="stylesheet" href="./css/common.css">
 </head>
 <body>
     <header>
@@ -18,7 +19,7 @@
       <button id="signupButton" style="display:none">Sign Up</button>
       <button id="loginButton" style="display:none">Log In</button>
       <button id="logoutButton" style="display:none">logOut</button>
-      <p id="support"></p>
+      <canvas id="downloadCanvas" style="display: none;"></canvas>
     </header> 
     <main>
       <div id="uploadContainer">
@@ -27,12 +28,23 @@
                role="uploadcare-uploader"
                name="content"
                data-crop="1:1">
+        <input id="acquireButton"
+               type="hidden"
+               role="uploadcare-uploader"
+               name="content"
+               data-crop="1:1">
       </div>
 
       <div id="memeContainer">
         <img id="memeImg" alt="Meme">
-        <div id="topText" class="memeText">Upper Meme</div>
-        <div id="bottomText" class="memeText">Lower Meme</div>
+        <div id="topText" class="memeText">
+            <img class="dragLayer" src="./img/drag.svg"></img>
+            <textarea>Upper Meme</textarea>
+        </div>
+        <div id="bottomText" class="memeText">
+            <img class="dragLayer" src="./img/drag.svg"></img>
+            <textarea>Lower Meme</textarea>
+        </div>
       </div>
       <button id="generateButton">Generate</button>
       <canvas id="myCanvas" style="display:none;"></canvas>

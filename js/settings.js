@@ -4,6 +4,7 @@ UPLOADCARE_EFFECTS = 'crop,rotate,mirror,flip,enhance,sharp,blur,grayscale,inver
 UPLOADCARE_IMAGES_ONLY = true;
 UPLOADCARE_PREVIEW_STEP = true; 
 
+<<<<<<< HEAD
 var app_firebase = {};
 (() => {
 	//Firebase Settings
@@ -45,3 +46,22 @@ var app_firebase = {};
 		delete: fnDelete,
 	}
 })();
+=======
+
+//Firebase Settings
+var config = {
+    apiKey: 'AIzaSyD6xIsrbAiwYJ9hDJBO7xjvLZsUo0tL1Tg',
+    authDomain: 'meme-master-177fb.firebaseapp.com',
+    databaseURL: 'https://meme-master-177fb.firebaseio.com',
+    projectId: 'meme-master-177fb',
+    storageBucket: 'meme-master-177fb.appspot.com',
+    messagingSenderId: '1043399803617'
+};
+
+var app_firebase = {};
+firebase.initializeApp(config);
+app_firebase = firebase;
+app_firebase['haha'] = ()=>{
+    console.log('From setting');
+};
+>>>>>>> 3c260876c4f605fad0763e04bea318df30fc2b63
