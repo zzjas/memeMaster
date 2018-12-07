@@ -5,7 +5,9 @@ import * as db from './firebase.js';
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 let firebase = app_firebase;
 let uid = null;
-let size = 1000;
+let imgSize = 1000;
+let fontSize = 60;
+let maxFontSize  = 60;
 
 function main() {
     // handle login & logout
@@ -23,9 +25,13 @@ function main() {
     document.body.appendChild(p);
     
     // Set up the UploadCare widget
-    let upload = uploadcare.Widget('[role="uploadcare-uploader"]');
-    //upload.onChange(uploadHandleChange);
+    let upload = uploadcare.Widget('#uploadButton');
+    document.querySelectorAll('#uploadButton + div button')[0].innerHTML = 'Upload Picture To Make Meme';
     upload.onUploadComplete(uploadHandleComplete);
+
+    let acquire = uploadcare.Widget('#acquireButton');
+    document.querySelectorAll('#acquireButton + div button')[0].innerHTML = 'Upload Meme To Account';
+    acquire.onUploadComplete(acquireHandleComplete);
 
     // Allow user to change the text by double clicking on the text
     document.querySelector('#topText').addEventListener('dblclick', textHandleDblclick('top'));
@@ -44,6 +50,14 @@ window.addEventListener('load', ()=> main() );
 
 
 
+
+
+
+
+
+
+
+/******************************* Helpers ************************************/
 /**
  * Render the image with canvas
  */
@@ -71,56 +85,6 @@ function handleGenerate() {
 
 
 
-
-
-
-
-/******************************* Helpers ************************************/
-
-
-
-
-
-
-/**
- * Open a success dialog to ask for user's next operation.
- * @param {string} url 
- */
-function openDialog(url) {
-    let t= document.getElementsByTagName('template')[0];
-    let dialog = t.content.querySelector('dialog').cloneNode(true);
-    let meme = dialog.querySelector('img'); 
-    meme.setAttribute('src', url);
-    meme.addEventListener('load', ()=>{ dialog.showModal(); });
-
-    dialog.querySelector('#succDownloadButton').addEventListener('click', ()=>{
-        button.generateDownloadHandler(url)();
-        discard();
-    });
-
-    let shareButton = dialog.querySelector('#succShareButton');
-    let shareResult = dialog.querySelector('#shareResult');
-    share.initShare(shareButton, shareResult);
-
-
-    dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
-    });
-    dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
-
-    function discard() {
-        let d = document.querySelector('dialog');
-        d.parentElement.removeChild(d);
-    }
-    document.body.appendChild(dialog);
-}
-
-
-
-
-
-
-
-
 /**
  * Turn the data uri to a file-like object in Javascript and upload it to
  * uploadcare.
@@ -143,12 +107,50 @@ function uploadRenderedImg(newImgDataURI) {
         p.innerHTML = `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
 
-        document.querySelector('#generateButton').innerHTML = 'Generate';
         openDialog(fileInfo.cdnUrl);
     }).fail(()=>{
         console.error('Upload Failed');
     });
 }
+
+
+
+
+
+
+/**
+ * Open a success dialog to ask for user's next operation.
+ * @param {string} url 
+ */
+function openDialog(url) {
+    let t= document.getElementsByTagName('template')[0];
+    let dialog = t.content.querySelector('dialog').cloneNode(true);
+    let meme = dialog.querySelector('img'); 
+    meme.setAttribute('src', url);
+    meme.addEventListener('load', ()=>{ dialog.showModal(); });
+
+    dialog.querySelector('#succDownloadButton').addEventListener('click', button.generateDownloadHandler(url));
+
+    let shareButton = dialog.querySelector('#succShareButton');
+    let shareResult = dialog.querySelector('#shareResult');
+    share.initShare(shareButton, shareResult);
+
+
+    dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
+    });
+    dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
+
+    function discard() {
+        let d = document.querySelector('dialog');
+        d.parentElement.removeChild(d);
+    }
+    document.querySelector('#generateButton').innerHTML = 'Generate';
+    document.body.appendChild(dialog);
+}
+
+
+
+
 
 
 
@@ -159,6 +161,7 @@ function uploadRenderedImg(newImgDataURI) {
  */
 function textHandleDblclick(pos) {
     let textBox = document.querySelector(`#${pos}Text`);
+
     return function handler() {
         let tmp = textBox.cloneNode(true);
         tmp.setAttribute('style',
@@ -177,18 +180,27 @@ function textHandleDblclick(pos) {
                  border: 1px dashed gray;`);
         }
 
-        input.addEventListener('blur', inputHandleComplete); 
+        input.addEventListener('blur', inputHandleComplete);
+        /*
         input.addEventListener('keypress', (e)=>{
             if(e.keyCode === 13) input.blur();
         });
-        input.addEventListener('keyup', ()=>{
-            input.style.height = '1px';
-            let old = input.style.height;
-            input.style.height = (25+input.scrollHeight)+'px';
-            if(old !== input.style.height) {
-                tmp.style.height = (25+input.scrollHeight)+'px';
+        */
+
+        let lastHeight = 0;
+        input.addEventListener('keydown', (e)=> {
+            lastHeight = input.scrollHeight;
+        })
+        input.addEventListener('keyup', (e)=> {
+            if(input.scrollHeight > lastHeight) {
+                fontSize -= 4;
+                document.querySelector('textarea').style.fontSize = `${fontSize}px`;
+                input.scrollHeight = lastHeight; 
             }
         });
+
+
+
         tmp.innerHTML = '';
         tmp.appendChild(input);
         document.querySelector('#memeContainer').replaceChild(tmp, textBox);
@@ -197,6 +209,8 @@ function textHandleDblclick(pos) {
         input.setSelectionRange(len, len);
     };
 }
+
+
 
 
 
@@ -240,8 +254,10 @@ function checkSignIn(user) {
     }
 }
 
-/******************************* Canvas  ************************************/
 
+
+
+/******************************* Canvas  ************************************/
 /**
  * Helper function for drawing text on image. 
  * @param {Canvas context} ctx 
@@ -257,17 +273,61 @@ function drawStroked(ctx, text, x, y) {
     ctx.fillStyle = 'white';
     ctx.fillText(text, x, y);
 }
-
-
 /****************************** UploadCare **********************************/
-
 /**
  * Store the URL of uploaded image into local storage and refresh the page to take effect
  * @param {object} info 
  */
 function uploadHandleComplete(info) {
     imgURL = info.cdnUrl;
-    imgURL += `-/resize/${size}x${size}/`;
+    imgURL += `-/resize/${imgSize}x${imgSize}/`;
     localStorage.setItem('currMeme', imgURL);
     window.location.href = window.location.href;
 }
+
+function acquireHandleComplete(info) {
+    window.open(info.cdnUrl);
+    window.location.href = './myMeme.html';
+}
+
+
+let detectResize = (function() {
+  
+    function detectResize(id, intervall, callback) {
+        this.id = id;
+        this.el = document.getElementById(this.id);
+        this.callback = callback || function(){};
+      
+        if (this.el) {
+            var self = this;
+            this.width = this.el.clientWidth;
+            this.height = this.el.clientHeight;
+        
+            this.el.addEventListener('mouseup', function() {
+                self.detectResize();
+            });
+        
+            this.el.addEventListener('keypress', function() {
+                self.detectResize();
+            });
+          
+            if(intervall) setInterval(function() {
+                self.detectResize();
+            }, intervall);
+        
+        }
+        return null;
+    }
+  
+    detectResize.prototype.detectResize = function() {
+        if (this.width != this.el.clientWidth || this.height != this.el.clientHeight) {
+            this.callback(this);
+            this.width = this.el.clientWidth;
+            this.height = this.el.clientHeight;
+        }
+    };
+  
+    return detectResize;
+  
+})();
+
