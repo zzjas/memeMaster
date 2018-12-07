@@ -4,7 +4,6 @@ UPLOADCARE_EFFECTS = 'crop,rotate,mirror,flip,enhance,sharp,blur,grayscale,inver
 UPLOADCARE_IMAGES_ONLY = true;
 UPLOADCARE_PREVIEW_STEP = true; 
 
-<<<<<<< HEAD
 var app_firebase = {};
 (() => {
 	//Firebase Settings
@@ -64,4 +63,3 @@ app_firebase = firebase;
 app_firebase['haha'] = ()=>{
     console.log('From setting');
 };
->>>>>>> 3c260876c4f605fad0763e04bea318df30fc2b63

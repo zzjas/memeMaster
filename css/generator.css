@@ -6,16 +6,16 @@ body {
     margin: auto;
     position: relative;
     text-align: center;
-    width: 500px;
-    height: 500px;
+    width: 40vw;
+    height: 40vw;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
 #memeImg {
     z-index: 1;
-    height: 500px;
-    width: 500px;
+    height: 40vw;
+    width: 40vw;
     margin: 0;
 }
 
@@ -23,8 +23,8 @@ body {
     position: absolute;
     z-index: 2;
     border: 1px dashed gray;
-    width: 499px;
-    height: 80px;
+    width: 39.82vw;
+    height: 6.22vw;
     padding: 0;
     cursor: pointer;
 }
@@ -34,14 +34,14 @@ body {
 }
 
 #bottomText {
-    top: 417px;
+    top: 33.46vw;
 }
 
 .memeText textarea {
     background-color: transparent;
     border:none;
     text-align: center;
-    font-size: 64px;
+    font-size: 5.12vw;
     color: white;
     font-family: Impact;
     text-shadow:

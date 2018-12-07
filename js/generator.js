@@ -5,17 +5,59 @@ import * as db from './firebase.js';
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 let firebase = app_firebase;
 let uid = null;
-let imgSize = 500;
+let imgSize = localStorage['imgSize'] || 500;
+let containerSize = localStorage['containerSize'] || 500;
+let imgRatio = imgSize/containerSize;
+const B2C = (33.46/40);
+let F2C = (5.12/40);
+localStorage.setItem('F2C', F2C);
+
 let topInfo = {
-    top: 0, fontSize: 64, text: 'Upper Meme', pos: 0
+    top: 0 * imgRatio, fontSize: F2C * containerSize, text: 'Upper Meme', pos: 0
 };
 let bottomInfo = {
-    top: 417, fontSize: 64, text: 'Lower Meme', pos: 0
+    top: B2C * containerSize, fontSize: F2C * containerSize, text: 'Lower Meme', pos: 0
 };
 
-function main() {
-    // handle login & logout
+function handleResize() {
+    let memeContainer = document.querySelector('#memeContainer');
 
+    let newContainerSize = memeContainer.clientWidth;
+
+    imgRatio = imgSize/newContainerSize;
+
+    
+    let tt = document.querySelector('#topText');
+    topInfo.fontSize = F2C * newContainerSize;
+    tt.style.fontSize = topInfo.fontSize;
+    let a = topInfo.top;
+    topInfo.top = (topInfo.top / containerSize) * newContainerSize;
+    tt.style.top = topInfo.top;
+    /*
+    console.log(`${a} ==> ${topInfo.top}`);
+    console.log(`${a/containerSize} ==> ${topInfo.top/newContainerSize}`);
+    console.log();
+    console.log('********');
+    */
+
+    let bt = document.querySelector('#bottomText');
+    bottomInfo.fontSize = F2C * newContainerSize;
+    bt.style.fontSize = bottomInfo.fontSize;
+
+    bottomInfo.top = (bottomInfo.top / containerSize) * newContainerSize;
+    bt.style.top = bottomInfo.top;
+
+    containerSize = newContainerSize;
+    localStorage.setItem('containerSize', containerSize);
+
+    //console.log(`ctnr(${containerSize}), imgSize(${imgSize}), ratio(${imgRatio}))`);
+}
+
+function main() {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    // handle login & logout
     firebase.auth().onAuthStateChanged(checkSignIn);
 
 
@@ -31,10 +73,12 @@ function main() {
     // Set up the UploadCare widget
     let upload = uploadcare.Widget('#uploadButton');
     document.querySelectorAll('#uploadButton + div button')[0].innerHTML = 'Upload Picture To Make Meme';
+
     upload.onUploadComplete(uploadHandleComplete);
 
     let acquire = uploadcare.Widget('#acquireButton');
     document.querySelectorAll('#acquireButton + div button')[0].innerHTML = 'Upload Meme To Account';
+
     acquire.onUploadComplete(acquireHandleComplete);
 
 
@@ -54,7 +98,7 @@ function createTextBox(qs, info) {
     document.getElementById('memeImg').ondragstart = function() { return false; };
     let textContainer = document.querySelector(qs);
     let text = textContainer.querySelector('textarea');
-    text.setAttribute('maxlength', '24');
+    text.setAttribute('maxlength', `${(22/500) * containerSize}`);
     let lastHeight = text.scrollHeight;
     let drag = textContainer.querySelector('.dragLayer');
 
@@ -64,21 +108,36 @@ function createTextBox(qs, info) {
             info.fontSize -= 1;
             text.setAttribute('style', `font-size: ${info.fontSize}px;`);
         }
+        F2C = info.fontSize / containerSize;
+        localStorage.setItem('F2C', F2C);
     });
 
     drag.addEventListener('dragstart', (e)=>{
         info.pos = e.screenY;
+
+        let uploadB = document.querySelector('#uploadButton + div');
+        uploadB.style.visibility = 'hidden';
+        let acquireB = document.querySelector('#acquireButton + div');
+        acquireB.style.visibility = 'hidden';
+
+        //console.log(`Start::::::::::pos(${info.pos})::real(${textContainer.style.top})`);
     });
 
     drag.addEventListener('drag', (e)=>{
         e.preventDefault();
         let d = e.screenY - info.pos;
-        info.pos = e.screenY;
         let newPos = info.top + d;
-        if(newPos >=0 && newPos < 417) {
+        //console.log(`newPos(${newPos}) = e.screenY(${e.screenY}) - info.pos(${info.pos}) + info.top(${info.top})`);
+        info.pos = e.screenY;
+
+        if(newPos > 0 && newPos < B2C * containerSize) {
             info.top = newPos;
         }
+        else {
+            //console.error('Out of bounds');
+        }
         textContainer.style.top = info.top+'px';
+        //console.log(`d(${d}) ==> newPos(${newPos}) ==> top(${info.top}) ==> real(${textContainer.style.top})`);
     });
 
 }
@@ -105,17 +164,20 @@ function handleGenerate() {
     ctx.drawImage(img,0,0);
     ctx.textAlign = 'center';
 
-    let p1 = 500;
-    let tt = (topInfo.top/p1) * ctx.canvas.height + topInfo.fontSize;
-    let bt = (bottomInfo.top/p1) * ctx.canvas.height + topInfo.fontSize;
+    let tt = (topInfo.top/containerSize) * ctx.canvas.height + topInfo.fontSize * imgRatio;
+    let bt = (bottomInfo.top/containerSize) * ctx.canvas.height + topInfo.fontSize * imgRatio;
 
-    ctx.font = `${topInfo.fontSize}px Impact`;
+    ctx.font = `${topInfo.fontSize * imgRatio}px Impact`;
     drawStroked(ctx, topInfo.text, ctx.canvas.width * 0.5, tt, topInfo.fontSize);
 
-    ctx.font = `${bottomInfo.fontSize}px Impact`;
+    ctx.font = `${bottomInfo.fontSize * imgRatio}px Impact`;
     drawStroked(ctx, bottomInfo.text, ctx.canvas.width * 0.5, bt, bottomInfo.fontSize);
 
     let newImgDataURI = c.toDataURL('image/png');
+    /*
+    var w = window.open("");
+    w.document.write(`<img src="${newImgDataURI}">`);
+    */
     uploadRenderedImg(newImgDataURI);
 }
 
@@ -241,7 +303,7 @@ function checkSignIn(user) {
  */
 function drawStroked(ctx, text, x, y, fs) {
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 0.109 * fs;
+    ctx.lineWidth = (7/45) * fs * imgRatio;
     ctx.strokeText(text, x, y);
     ctx.fillStyle = 'white';
     ctx.fillText(text, x, y);
@@ -253,8 +315,23 @@ function drawStroked(ctx, text, x, y, fs) {
  */
 function uploadHandleComplete(info) {
     imgURL = info.cdnUrl;
-    imgURL += `-/resize/${imgSize}x${imgSize}/`;
+    let r = /(?:crop\/)[0-9]*/;
+    //console.log(imgURL);
+    let t = imgURL.match(r);
+    if(t) {
+        r = /\d+/;
+        imgSize = parseInt(t[0].match(r)[0]);
+    }
+    else {
+        imgSize = info.originalImageInfo.width;
+    }
+    //console.warn('Resize after upload');
+    handleResize();
+
+
+    //imgURL += `-/resize/${imgSize}x${imgSize}/`;
     localStorage.setItem('currMeme', imgURL);
+    localStorage.setItem('imgSize', imgSize);
     window.location.href = window.location.href;
 }
 

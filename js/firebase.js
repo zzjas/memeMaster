@@ -49,7 +49,6 @@ export function getSingleMeme(uid, title) {
         offset: ''
     };
 }
-<<<<<<< HEAD
 
 export var app_main = {};
 export var item = [];
@@ -219,5 +218,3 @@ export var count = 0;
     app_main.deleteMeme = fnDeleteMeme;
     app_main.retriveData = retriveData;
 })();
-=======
->>>>>>> 3c260876c4f605fad0763e04bea318df30fc2b63

@@ -20,22 +20,21 @@
       <button id="loginButton" style="display:none">Log In</button>
       <button id="logoutButton" style="display:none">logOut</button>
       <canvas id="downloadCanvas" style="display: none;"></canvas>
+        <div id="uploadContainer">
+            <input id="uploadButton"
+                type="hidden"
+                role="uploadcare-uploader"
+                name="content"
+                data-crop="1:1">
+            <input id="acquireButton"
+                type="hidden"
+                role="uploadcare-uploader"
+                name="content"
+                data-crop="1:1">
+        </div>
     </header> 
     <main>
-      <div id="uploadContainer">
-        <input id="uploadButton"
-               type="hidden"
-               role="uploadcare-uploader"
-               name="content"
-               data-crop="1:1">
-        <input id="acquireButton"
-               type="hidden"
-               role="uploadcare-uploader"
-               name="content"
-               data-crop="1:1">
-      </div>
-
-      <div id="memeContainer">
+         <div id="memeContainer">
         <img id="memeImg" alt="Meme">
         <div id="topText" class="memeText">
             <img class="dragLayer" src="./img/drag.svg"></img>

@@ -1,4 +1,5 @@
 header button, #generateButton {
+    font-size: 1vw !important;
     background: #157cfc;
     color: #fff;
     padding: .4em 1em;
