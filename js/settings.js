@@ -47,6 +47,7 @@ var app_firebase = {};
 })();
 
 //Firebase Settings
+/*
 var config = {
     apiKey: 'AIzaSyD6xIsrbAiwYJ9hDJBO7xjvLZsUo0tL1Tg',
     authDomain: 'meme-master-177fb.firebaseapp.com',
@@ -62,3 +63,4 @@ app_firebase = firebase;
 app_firebase['haha'] = ()=>{
     console.log('From setting');
 };
+*/
