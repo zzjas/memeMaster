@@ -263,7 +263,7 @@ function checkSignIn(user) {
     let loginButton = document.querySelector('#loginButton');
 
     if(user) {
-        uid = user;
+        uid = user.uid;
         accountButton.style.display = '';
         myMemeButton.style.display = '';
         logoutButton.style.display = '';
