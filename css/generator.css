@@ -45,10 +45,10 @@ body {
     color: white;
     font-family: Impact;
     text-shadow:
-    -3px -3px 0 #000,  
-     3px -3px 0 #000,
-    -3px  3px 0 #000,
-     3px  3px 0 #000;
+    -0.29vw -0.29vw 0 #000,  
+     0.29vw -0.29vw 0 #000,
+    -0.29vw  0.29vw 0 #000,
+     0.29vw  0.29vw 0 #000;
      height: 100%;
      width: 100%;
      resize: none;
