@@ -232,7 +232,7 @@ function openDialog(url) {
 
     let shareButton = dialog.querySelector('#succShareButton');
     let shareResult = dialog.querySelector('#shareResult');
-    share.initShare(shareButton, shareResult);
+    share.initShare(shareButton, shareResult, url);
 
 
     dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{

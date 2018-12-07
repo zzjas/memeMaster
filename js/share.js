@@ -1,4 +1,4 @@
-export function initShare(shareButton, support){
+export function initShare(shareButton, support, url){
     // Listen for any clicks
     shareButton.addEventListener('click', function (ev) {
         // Check if the current browser supports the Web Share API
@@ -17,7 +17,16 @@ export function initShare(shareButton, support){
             ev.preventDefault();
         } 
         else {
-            support.innerHTML = 'Unfortunately, this feature is not supported on your browser';
+            const el = document.createElement('input');
+            el.value = url;
+            support.appendChild(el);
+            const cb = document.createElement('button');
+            cb.innerHTML = "Copy Link";
+            cb.addEventListener('click',()=>{
+                el.select();
+                document.execCommand('copy');
+            });
+            support.appendChild(cb);
             support.style.display = '';
         }
     });
