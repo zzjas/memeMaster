@@ -45,7 +45,6 @@ var app_firebase = {};
 		delete: fnDelete,
 	}
 })();
-=======
 
 //Firebase Settings
 var config = {
