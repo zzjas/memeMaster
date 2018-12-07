@@ -37,8 +37,14 @@
 
       <div id="memeContainer">
         <img id="memeImg" alt="Meme">
-        <div id="topText" class="memeText">Upper Meme</div>
-        <div id="bottomText" class="memeText">Lower Meme</div>
+        <div id="topText" class="memeText">
+            <img class="dragLayer" src="./img/drag.svg"></img>
+            <textarea>Upper Meme</textarea>
+        </div>
+        <div id="bottomText" class="memeText">
+            <img class="dragLayer" src="./img/drag.svg"></img>
+            <textarea>Lower Meme</textarea>
+        </div>
       </div>
       <button id="generateButton">Generate</button>
       <canvas id="myCanvas" style="display:none;"></canvas>

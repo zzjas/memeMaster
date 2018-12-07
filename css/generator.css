@@ -22,15 +22,6 @@ body {
 .memeText {
     position: absolute;
     z-index: 2;
-    text-align: center;
-    font-size: 64px;
-    color: white;
-    font-family: Impact;
-    text-shadow:
-    -3px -3px 0 #000,  
-     3px -3px 0 #000,
-    -3px  3px 0 #000,
-     3px  3px 0 #000;
     border: 1px dashed gray;
     width: 499px;
     height: 80px;
@@ -43,7 +34,7 @@ body {
 }
 
 #bottomText {
-    bottom: 3px;
+    top: 417px;
 }
 
 .memeText textarea {
@@ -62,11 +53,22 @@ body {
      width: 100%;
      resize: none;
      overflow: hidden;
+     line-height: 1;
 }
 
 .memeText textarea:focus {
     outline: none;
+    background-color: rgba(192,192,192, 0.5);
     caret-color: black;
+}
+
+.dragLayer {
+    z-index: 10;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 dialog {

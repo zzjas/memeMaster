@@ -5,9 +5,13 @@ import * as db from './firebase.js';
 let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
 let firebase = app_firebase;
 let uid = null;
-let imgSize = 1000;
-let fontSize = 60;
-let maxFontSize  = 60;
+let imgSize = 500;
+let topInfo = {
+    top: 0, fontSize: 64, text: 'Upper Meme', pos: 0
+};
+let bottomInfo = {
+    top: 417, fontSize: 64, text: 'Lower Meme', pos: 0
+};
 
 function main() {
     // handle login & logout
@@ -33,10 +37,11 @@ function main() {
     document.querySelectorAll('#acquireButton + div button')[0].innerHTML = 'Upload Meme To Account';
     acquire.onUploadComplete(acquireHandleComplete);
 
-    // Allow user to change the text by double clicking on the text
-    document.querySelector('#topText').addEventListener('dblclick', textHandleDblclick('top'));
-    document.querySelector('#bottomText').addEventListener('dblclick', textHandleDblclick('bottom'));
-    
+
+
+    createTextBox('#topText', topInfo);
+    createTextBox('#bottomText', bottomInfo);
+
     // Render the image
     document.querySelector('#generateButton').addEventListener('click', handleGenerate);
 }
@@ -45,13 +50,38 @@ function main() {
 
 window.addEventListener('load', ()=> main() );
 
+function createTextBox(qs, info) {
+    document.getElementById('memeImg').ondragstart = function() { return false; };
+    let textContainer = document.querySelector(qs);
+    let text = textContainer.querySelector('textarea');
+    text.setAttribute('maxlength', '24');
+    let lastHeight = text.scrollHeight;
+    let drag = textContainer.querySelector('.dragLayer');
 
+    text.addEventListener('keyup', ()=>{
+        info.text = text.value;
+        while(text.scrollHeight > lastHeight && info.fontSize > 0) {
+            info.fontSize -= 1;
+            text.setAttribute('style', `font-size: ${info.fontSize}px;`);
+        }
+    });
 
+    drag.addEventListener('dragstart', (e)=>{
+        info.pos = e.screenY;
+    });
 
+    drag.addEventListener('drag', (e)=>{
+        e.preventDefault();
+        let d = e.screenY - info.pos;
+        info.pos = e.screenY;
+        let newPos = info.top + d;
+        if(newPos >=0 && newPos < 417) {
+            info.top = newPos;
+        }
+        textContainer.style.top = info.top+'px';
+    });
 
-
-
-
+}
 
 
 
@@ -73,11 +103,18 @@ function handleGenerate() {
 
     //ctx.drawImage(background,0,0);
     ctx.drawImage(img,0,0);
-    ctx.font = '8em Impact';
-    let upper = document.querySelector('#topText').innerHTML;
-    let lower = document.querySelector('#bottomText').innerHTML;
-    drawStroked(ctx, upper, ctx.canvas.width * 0.46, img.naturalHeight * 0.14);
-    drawStroked(ctx, lower, ctx.canvas.width * 0.46, img.naturalHeight * 0.93);
+    ctx.textAlign = 'center';
+
+    let p1 = 500;
+    let tt = (topInfo.top/p1) * ctx.canvas.height + topInfo.fontSize;
+    let bt = (bottomInfo.top/p1) * ctx.canvas.height + topInfo.fontSize;
+
+    ctx.font = `${topInfo.fontSize}px Impact`;
+    drawStroked(ctx, topInfo.text, ctx.canvas.width * 0.5, tt, topInfo.fontSize);
+
+    ctx.font = `${bottomInfo.fontSize}px Impact`;
+    drawStroked(ctx, bottomInfo.text, ctx.canvas.width * 0.5, bt, bottomInfo.fontSize);
+
     let newImgDataURI = c.toDataURL('image/png');
     uploadRenderedImg(newImgDataURI);
 }
@@ -151,69 +188,6 @@ function openDialog(url) {
 
 
 
-
-
-
-/**
- * When user double clicks the text, add an input field to allow user to change
- * the text. After losing the focus, changed input will be stored in the text
- * box.
- */
-function textHandleDblclick(pos) {
-    let textBox = document.querySelector(`#${pos}Text`);
-
-    return function handler() {
-        let tmp = textBox.cloneNode(true);
-        tmp.setAttribute('style',
-            `background-color: rgba(192,192,192, 0.5);
-             border: 2px dashed black;`);
-
-        let input = document.createElement('textarea');
-        input.value = tmp.innerHTML;
-
-        function inputHandleComplete() {
-            tmp.removeChild(input);
-            tmp.innerHTML = input.value;
-            tmp.addEventListener('dblclick', textHandleDblclick('top'));
-            tmp.setAttribute('style',
-                `background-color: transparent;
-                 border: 1px dashed gray;`);
-        }
-
-        input.addEventListener('blur', inputHandleComplete);
-        /*
-        input.addEventListener('keypress', (e)=>{
-            if(e.keyCode === 13) input.blur();
-        });
-        */
-
-        let lastHeight = 0;
-        input.addEventListener('keydown', (e)=> {
-            lastHeight = input.scrollHeight;
-        })
-        input.addEventListener('keyup', (e)=> {
-            if(input.scrollHeight > lastHeight) {
-                fontSize -= 4;
-                document.querySelector('textarea').style.fontSize = `${fontSize}px`;
-                input.scrollHeight = lastHeight; 
-            }
-        });
-
-
-
-        tmp.innerHTML = '';
-        tmp.appendChild(input);
-        document.querySelector('#memeContainer').replaceChild(tmp, textBox);
-
-        let len = input.innerHTML.length;
-        input.setSelectionRange(len, len);
-    };
-}
-
-
-
-
-
 /**
  * Check whether user has signed in and render different buttons on screen
  * accordingly.
@@ -265,10 +239,9 @@ function checkSignIn(user) {
  * @param {number} x 
  * @param {number} y 
  */
-function drawStroked(ctx, text, x, y) {
-    ctx.textAlign = 'center';
+function drawStroked(ctx, text, x, y, fs) {
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 7;
+    ctx.lineWidth = 0.109 * fs;
     ctx.strokeText(text, x, y);
     ctx.fillStyle = 'white';
     ctx.fillText(text, x, y);
@@ -289,45 +262,3 @@ function acquireHandleComplete(info) {
     window.open(info.cdnUrl);
     window.location.href = './myMeme.html';
 }
-
-
-let detectResize = (function() {
-  
-    function detectResize(id, intervall, callback) {
-        this.id = id;
-        this.el = document.getElementById(this.id);
-        this.callback = callback || function(){};
-      
-        if (this.el) {
-            var self = this;
-            this.width = this.el.clientWidth;
-            this.height = this.el.clientHeight;
-        
-            this.el.addEventListener('mouseup', function() {
-                self.detectResize();
-            });
-        
-            this.el.addEventListener('keypress', function() {
-                self.detectResize();
-            });
-          
-            if(intervall) setInterval(function() {
-                self.detectResize();
-            }, intervall);
-        
-        }
-        return null;
-    }
-  
-    detectResize.prototype.detectResize = function() {
-        if (this.width != this.el.clientWidth || this.height != this.el.clientHeight) {
-            this.callback(this);
-            this.width = this.el.clientWidth;
-            this.height = this.el.clientHeight;
-        }
-    };
-  
-    return detectResize;
-  
-})();
-
