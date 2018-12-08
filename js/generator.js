@@ -3,7 +3,7 @@ import * as share from './share.js';
 import * as db from './firebase.js';
 
 
-const B2C = (29.2775/40);
+const B2C = (29.2775/35);
 const defaultF2C = (4.48/40);
 
 // firebase init
