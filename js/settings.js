@@ -1,5 +1,5 @@
 // UploadCare Settings
-UPLOADCARE_PUBLIC_KEY = 'dbaeb1c5c17601cbf134';
+UPLOADCARE_PUBLIC_KEY = '999d80039e2e32d01c95';
 UPLOADCARE_EFFECTS = 'crop,rotate,mirror,flip,enhance,sharp,blur,grayscale,invert';
 UPLOADCARE_IMAGES_ONLY = true;
 UPLOADCARE_PREVIEW_STEP = true; 
