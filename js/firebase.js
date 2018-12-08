@@ -50,12 +50,17 @@ export var count = 0;
                         rendered: temp.rendered,
                         date: new Date(temp.date),
                         editable: temp.editable,
-                        top_pos: temp.top_pos,
-                        top_fontSize: temp.top_fontSize,
-                        top_text: temp.top_text,
-                        bottom_pos: temp.bottom_pos,
-                        bottom_fontSize: temp.bottom_fontSize,
-                        bottom_text: temp.bottom_text
+                        imgSize: temp.imgSize,
+                        top: {
+                            fontSize: temp.top.fontSize,
+                            pos: temp.top.pos,
+                            text: temp.top.text
+                        },
+                        bot: {
+                            fontSize: temp.bot.fontSize,
+                            pos: temp.bot.pos,
+                            text:temp.bot.text
+                        }
                     };
                     item.push(t);
                 }
@@ -144,12 +149,16 @@ export var count = 0;
             rendered: info.rendered,
             date: info.date.toISOString(),
             editable: info.editable,
-            top_pos: info.top_pos,
-            top_fontSize: info.top_fontSize,
-            top_text: info.top_text,
-            bottom_pos: info.bottom_pos,
-            bottom_fontSize: info.bottom_fontSize,
-            bottom_text: info.bottom_text
+            top: {
+                fontSize: info.top.fontSize,
+                pos: info.top.pos,
+                text: info.top.text
+            },
+            bot: {
+                fontSize: info.bot.fontSize,
+                pos: info.bot.pos,
+                text: info.bot.text
+            }
         }
         app_firebase.databaseApi.update(path, {count:currentCount+1}, messageHandler);  
         app_firebase.database().ref(path).push(data);
@@ -162,12 +171,16 @@ export var count = 0;
         var data = {
             rendered: info.rendered,
             date: info.date.toISOString(),
-            top_pos: info.top_pos,
-            top_fontSize: info.top_fontSize,
-            top_text: info.top_text,
-            bottom_pos: info.bottom_pos,
-            bottom_fontSize: info.bottom_fontSize,
-            bottom_text: info.bottom_text
+            top: {
+                fontSize: info.top.fontSize,
+                pos: info.top.pos,
+                text: info.top.text
+            },
+            bot: {
+                fontSize: info.bot.fontSize,
+                pos: info.bot.pos,
+                text: info.bot.text
+            }
         }
         app_firebase.databaseApi.update(path, data, messageHandler);        
     }

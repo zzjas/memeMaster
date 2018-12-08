@@ -2,175 +2,214 @@ import * as button from './button.js';
 import * as share from './share.js';
 import * as db from './firebase.js';
 
-let imgURL = localStorage['currMeme'] || './img/doge.jpeg'; 
+
+const B2C = (33.46/40);
+const defaultF2C = (5.12/40);
+
+// firebase init
 let firebase = app_firebase;
 let uid = null;
-let imgSize = localStorage['imgSize'] || 500;
+
 let containerSize = localStorage['containerSize'] || 500;
-let imgRatio = imgSize/containerSize;
-const B2C = (33.46/40);
-// F2C is the fontSize for firebase
-let F2C = (5.12/40);
+
+let F2C = defaultF2C;
 localStorage.setItem('F2C', F2C);
-let topInfo = { top: 0 * imgRatio, fontSize: F2C * containerSize, text: 'Upper Meme', pos: 0 };
-let bottomInfo = { top: B2C * containerSize, fontSize: F2C * containerSize, text: 'Lower Meme', pos: 0 };
 
-function checkEdit() {
-    if(!localStorage['edit']) { return; }
-    let info = JSON.parse(localStorage.edit);
 
-    imgURL = info.imgURL;
-    localStorage.setItem('currMeme', imgURL);
+const defaultInfo = {
+    imgURL: './img/doge.jpeg',
+    title: '',
+    key: '',
+    imgSize: 451,
+    top: {
+        fontSize: defaultF2C * containerSize,
+        pos: 0,
+        text: 'Upper Text'
+    },
+    bot: {
+        fontSize: defaultF2C * containerSize,
+        pos: B2C * containerSize,
+        text: 'Lower Text'
+    }
+};
 
-    imgSize = info.imgSize;
-    localStorage.setItem('imgSize', imgSize);
+let info = (localStorage['info']) ? JSON.parse(localStorage['info']) : defaultInfo;
 
-    F2C = info.fontSize;
-    localStorage.setItem('F2C', F2C);
+let imgRatio = info.imgSize/containerSize;
 
-    topInfo.top = {
-        top: info.top_pos,
-        fontSize: F2C * containerSize,
-        text: info.top_text
-    };
-}
 
 function main() {
     // handle login & logout
     firebase.auth().onAuthStateChanged(checkSignIn);
 
-    //checkEdit();
     handleResize();
-    window.addEventListener('resize', handleResize);
+    renderMemeContainer();
+    initTextBoxes();
+
+    window.addEventListener('resize', ()=>{
+        handleResize();
+        renderMemeContainer();
+    });
 
 
-    // Put default or last meme as placeholder
-    let memeImg = document.querySelector('#memeImg');
-    memeImg.crossOrigin = 'anonymous';
-    memeImg.src= imgURL;
 
     let p = document.createElement('p');
-    p.innerHTML = `Raw: <a href="${imgURL}" target="_blank">${imgURL}</a>`;
+    p.innerHTML = `Raw: <a href="${info.imgURL}" target="_blank">${info.imgURL}</a>`;
     document.body.appendChild(p);
     
     // Set up the UploadCare widget
     let upload = uploadcare.Widget('#uploadButton');
     document.querySelectorAll('#uploadButton + div button')[0].innerHTML = 'Upload Picture To Make Meme';
-
     upload.onUploadComplete(uploadHandleComplete);
 
     let acquire = uploadcare.Widget('#acquireButton');
     document.querySelectorAll('#acquireButton + div button')[0].innerHTML = 'Upload Meme To Account';
-
     acquire.onUploadComplete(acquireHandleComplete);
-
-
-
-    createTextBox('#topText', topInfo);
-    createTextBox('#bottomText', bottomInfo);
 
     // Render the image
     document.querySelector('#generateButton').addEventListener('click', handleGenerate);
 }
-
-
-
 window.addEventListener('load', ()=> main() );
 
 
 
-
-
 /******************************* Helpers ************************************/
-function createTextBox(qs, info) {
-    document.getElementById('memeImg').ondragstart = function() { return false; };
-    let textContainer = document.querySelector(qs);
-    let text = textContainer.querySelector('textarea');
-    text.setAttribute('maxlength', `${(22/500) * containerSize}`);
-    let lastHeight = text.scrollHeight;
-    let drag = textContainer.querySelector('.dragLayer');
+/**
+ * Render the meme and two text boxes according to the current info and containerSize
+ * 
+ * Would change imgRatio
+ *  */
+function renderMemeContainer() {
+    let memeContainer = document.querySelector('#memeContainer');
+    let memeImg = memeContainer.querySelector('#memeImg');
 
-    text.addEventListener('keyup', ()=>{
-        info.text = text.value;
-        while(text.scrollHeight > lastHeight && info.fontSize > 0) {
-            info.fontSize -= 1;
-            text.setAttribute('style', `font-size: ${info.fontSize}px;`);
-        }
-        F2C = info.fontSize / containerSize;
-        localStorage.setItem('F2C', F2C);
+    if(memeImg.src != info.imgURL) {
+        memeImg.crossOrigin = 'anonymous';
+        memeImg.src = info.imgURL;
+    }
+    
+    imgRatio = info.imgSize/containerSize;
+
+    ['#topText', '#bottomText'].forEach(qs => {
+        const T = (qs == '#topText');
+        let textContainer = document.querySelector(qs);
+        let text = textContainer.querySelector('textarea');
+        text.setAttribute('maxlength', `${(23/500) * containerSize}`);
+        console.log(`containerSize is ${containerSize}`);
+        console.log(`maxlength is: ${(30/500) * containerSize}`);
+        text.style.fontSize = T ? info.top.fontSize : info.bot.fontSize;
+        text.value = T ? info.top.text : info.bot.text;
+        text.style.top = T ? info.top.pos : info.bot.pos;
     });
-
-    drag.addEventListener('dragstart', (e)=>{
-        info.pos = e.screenY;
-
-        let uploadB = document.querySelector('#uploadButton + div');
-        uploadB.style.visibility = 'hidden';
-        let acquireB = document.querySelector('#acquireButton + div');
-        acquireB.style.visibility = 'hidden';
-
-        //console.log(`Start::::::::::pos(${info.pos})::real(${textContainer.style.top})`);
-    });
-
-    drag.addEventListener('drag', (e)=>{
-        e.preventDefault();
-        let d = e.screenY - info.pos;
-        let newPos = info.top + d;
-        //console.log(`newPos(${newPos}) = e.screenY(${e.screenY}) - info.pos(${info.pos}) + info.top(${info.top})`);
-        info.pos = e.screenY;
-
-        if(newPos > 0 && newPos < B2C * containerSize) {
-            info.top = newPos;
-        }
-        else {
-            //console.error('Out of bounds');
-        }
-        textContainer.style.top = info.top+'px';
-        //console.log(`d(${d}) ==> newPos(${newPos}) ==> top(${info.top}) ==> real(${textContainer.style.top})`);
-    });
-
 }
 
-
-
-
-
-
-
+/**
+ * Update the size of current container. Will change info but will not change
+ * DOM tree;
+ */
 function handleResize() {
     let memeContainer = document.querySelector('#memeContainer');
 
     let newContainerSize = memeContainer.clientWidth;
+    let delta = newContainerSize / containerSize;
 
-    imgRatio = imgSize/newContainerSize;
-
+    imgRatio = info.imgSize/newContainerSize;
     
-    let tt = document.querySelector('#topText');
-    topInfo.fontSize = F2C * newContainerSize;
-    tt.style.fontSize = topInfo.fontSize;
-    let a = topInfo.top;
-    topInfo.top = (topInfo.top / containerSize) * newContainerSize;
-    tt.style.top = topInfo.top;
+    //info.top.fontSize = F2C * newContainerSize;
+    info.top.fontSize *= delta;
+    info.top.pos *= delta;
     /*
+    let a = topInfo.top;
     console.log(`${a} ==> ${topInfo.top}`);
     console.log(`${a/containerSize} ==> ${topInfo.top/newContainerSize}`);
     console.log();
     console.log('********');
     */
 
-    let bt = document.querySelector('#bottomText');
-    bottomInfo.fontSize = F2C * newContainerSize;
-    bt.style.fontSize = bottomInfo.fontSize;
-
-    bottomInfo.top = (bottomInfo.top / containerSize) * newContainerSize;
-    bt.style.top = bottomInfo.top;
+    //info.bot.fontSize = F2C * newContainerSize;
+    info.bot.fontSize *= delta;
+    info.bot.pos *= delta;
 
     containerSize = newContainerSize;
+    localStorage.setItem('info', JSON.stringify(info));
     localStorage.setItem('containerSize', containerSize);
 
     //console.log(`ctnr(${containerSize}), imgSize(${imgSize}), ratio(${imgRatio}))`);
 }
 
 
+
+/**
+ * Initialize the event handlers for the text boxes. Should be run after renderring
+ * the text boxes.
+ */
+function initTextBoxes() {
+    document.getElementById('memeImg').ondragstart = function() { return false; };
+
+    ['#topText', '#bottomText'].forEach(qs => {
+
+        let textContainer = document.querySelector(qs);
+        let text = textContainer.querySelector('textarea');
+        let drag = textContainer.querySelector('.dragLayer');
+        let lastHeight = text.scrollHeight;
+
+        let handleKeyup = ()=>{
+            let newInfo = (qs == '#topText') ? info.top : info.bot;
+            newInfo.text = text.value;
+
+            console.log(`Change Font Size: lastHeight(${lastHeight}) ==> currHeight(${text.scrollHeight})`);
+
+            while(text.scrollHeight > lastHeight && newInfo.fontSize > 0) {
+                newInfo.fontSize -= 1;
+                text.setAttribute('style', `font-size: ${newInfo.fontSize}px;`);
+            }
+
+            F2C = newInfo.fontSize / containerSize;
+            localStorage.setItem('F2C', F2C);
+            if(qs == '#topText') { info.top = newInfo; }
+            else { info.bot = newInfo; }
+            localStorage.setItem('info', JSON.stringify(info));
+            //renderMemeContainer();
+        };
+
+        let handleDragStart = (e)=>{
+            let newInfo = (qs == '#topText') ? info.top : info.bot;
+            newInfo.pos = e.screenY;
+            let uploadB = document.querySelector('#uploadButton + div');
+            uploadB.style.visibility = 'hidden';
+            let acquireB = document.querySelector('#acquireButton + div');
+            acquireB.style.visibility = 'hidden';
+            console.log(`Start::::::::::pos(${newInfo.pos})::real(${textContainer.style.top})`);
+            if(qs == '#topText') { info.top = newInfo; }
+            else { info.bot = newInfo; }
+            localStorage.setItem('info', JSON.stringify(info));
+            renderMemeContainer();
+        };
+
+        let handleDrag = (e)=>{
+            let newInfo = (qs == '#topText') ? info.top : info.bot;
+            e.preventDefault();
+            let d = e.screenY - newInfo.pos;
+            let newPos = newInfo.top + d;
+            //console.log(`newPos(${newPos}) = e.screenY(${e.screenY}) - info.pos(${info.pos}) + info.top(${info.top})`);
+            newInfo.pos = e.screenY;
+
+            if(newPos > 0 && newPos < B2C * containerSize) {
+                info.top = newPos;
+            } else { /* console.error('Out of bounds'); */ }
+            textContainer.style.top = newInfo.top+'px';
+            //console.log(`d(${d}) ==> newPos(${newPos}) ==> top(${info.top}) ==> real(${textContainer.style.top})`);
+            if(qs == '#topText') { info.top = newInfo; }
+            else { info.bot = newInfo; }
+            localStorage.setItem('info', JSON.stringify(info));
+            renderMemeContainer();
+        };
+        text.addEventListener('keyup', handleKeyup);
+        drag.addEventListener('dragstart', handleDragStart);
+        drag.addEventListener('darg', handleDrag);
+    });
+
+}
 
 
 /**
@@ -186,28 +225,43 @@ function handleGenerate() {
     ctx.canvas.width = img.naturalWidth;
     ctx.canvas.height = img.naturalHeight;
 
-    //ctx.drawImage(background,0,0);
     ctx.drawImage(img,0,0);
     ctx.textAlign = 'center';
 
-    let tt = (topInfo.top/containerSize) * ctx.canvas.height + topInfo.fontSize * imgRatio;
-    let bt = (bottomInfo.top/containerSize) * ctx.canvas.height + topInfo.fontSize * imgRatio;
+    let tt = (info.top.pos/containerSize) * ctx.canvas.height + info.top.fontSize * imgRatio;
+    let bt = (info.bot.pos/containerSize) * ctx.canvas.height + info.bot.fontSize * imgRatio;
 
-    ctx.font = `${topInfo.fontSize * imgRatio}px Impact`;
-    drawStroked(ctx, topInfo.text, ctx.canvas.width * 0.5, tt, topInfo.fontSize);
+    ctx.font = `${info.top.fontSize * imgRatio}px Impact`;
+    drawStroked(ctx, info.top.text, ctx.canvas.width * 0.5, tt, info.top.fontSize);
 
-    ctx.font = `${bottomInfo.fontSize * imgRatio}px Impact`;
-    drawStroked(ctx, bottomInfo.text, ctx.canvas.width * 0.5, bt, bottomInfo.fontSize);
+    ctx.font = `${info.bot.fontSize * imgRatio}px Impact`;
+    drawStroked(ctx, info.bot.text, ctx.canvas.width * 0.5, bt, info.bot.fontSize);
 
     let newImgDataURI = c.toDataURL('image/png');
-    /*
     var w = window.open("");
     w.document.write(`<img src="${newImgDataURI}">`);
-    */
-    uploadRenderedImg(newImgDataURI);
+    //uploadRenderedImg(newImgDataURI);
 }
 
 
+
+
+
+
+/**
+ * Helper function for drawing text on image. 
+ * @param {Canvas context} ctx 
+ * @param {string} text 
+ * @param {number} x 
+ * @param {number} y 
+ */
+function drawStroked(ctx, text, x, y, fs) {
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = (7/45) * fs * imgRatio;
+    ctx.strokeText(text, x, y);
+    ctx.fillStyle = 'white';
+    ctx.fillText(text, x, y);
+}
 
 
 /**
@@ -223,7 +277,7 @@ function uploadRenderedImg(newImgDataURI) {
     }
     let newImgBlob = new Blob([new Uint8Array(a)], {type: 'image/png'});
     newImgBlob.lastModifiedDate = new Date();
-    newImgBlob.name = 'newImg.png';
+    newImgBlob.name = 'new-meme.png';
 
     let newImg = uploadcare.fileFrom('object', newImgBlob);
 
@@ -320,48 +374,33 @@ function checkSignIn(user) {
 
 
 /******************************* Canvas  ************************************/
-/**
- * Helper function for drawing text on image. 
- * @param {Canvas context} ctx 
- * @param {string} text 
- * @param {number} x 
- * @param {number} y 
- */
-function drawStroked(ctx, text, x, y, fs) {
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = (7/45) * fs * imgRatio;
-    ctx.strokeText(text, x, y);
-    ctx.fillStyle = 'white';
-    ctx.fillText(text, x, y);
-}
+
 /****************************** UploadCare **********************************/
 /**
  * Store the URL of uploaded image into local storage and refresh the page to take effect
  * @param {object} info 
  */
-function uploadHandleComplete(info) {
-    imgURL = info.cdnUrl;
+function uploadHandleComplete(file) {
+    info.imgURL = file.cdnUrl;
     let r = /(?:crop\/)[0-9]*/;
     //console.log(imgURL);
-    let t = imgURL.match(r);
+    let t = info.imgURL.match(r);
     if(t) {
         r = /\d+/;
-        imgSize = parseInt(t[0].match(r)[0]);
+        info.imgSize = parseInt(t[0].match(r)[0]);
     }
     else {
-        imgSize = info.originalImageInfo.width;
+        info.imgSize = info.originalImageInfo.width;
     }
     //console.warn('Resize after upload');
     handleResize();
 
 
-    //imgURL += `-/resize/${imgSize}x${imgSize}/`;
-    localStorage.setItem('currMeme', imgURL);
-    localStorage.setItem('imgSize', imgSize);
+    localStorage.setItem('info', JSON.stringify(info));
     window.location.href = window.location.href;
 }
 
-function acquireHandleComplete(info) {
-    window.open(info.cdnUrl);
+function acquireHandleComplete(file) {
+    window.open(file.cdnUrl);
     window.location.href = './myMeme.html';
 }

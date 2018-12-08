@@ -15,10 +15,10 @@
 <body>
     <header>
       <button id="myMemeButton" style="display:none">My Meme</button>
-      <button id="accountButton" style="display:none">Account</button>
       <button id="signupButton" style="display:none">Sign Up</button>
       <button id="loginButton" style="display:none">Log In</button>
-      <button id="logoutButton" style="display:none">logOut</button>
+      <button id="logoutButton" style="display:none">Log Out</button>
+      <button id="accountButton" style="display:none">Change Password</button>
       <canvas id="downloadCanvas" style="display: none;"></canvas>
         <div id="uploadContainer">
             <input id="uploadButton"
@@ -35,15 +35,15 @@
     </header> 
     <main>
         <div id="memeContainer">
-        <img id="memeImg" alt="Meme">
-        <div id="topText" class="memeText">
-            <img class="dragLayer" src="./img/drag.svg"></img>
-            <textarea>Upper Meme</textarea>
-        </div>
-        <div id="bottomText" class="memeText">
-            <img class="dragLayer" src="./img/drag.svg"></img>
-            <textarea>Lower Meme</textarea>
-        </div>
+            <img id="memeImg" alt="Meme">
+            <div id="topText" class="memeText">
+                <img class="dragLayer" src="./img/drag.svg"></img>
+                <textarea></textarea>
+            </div>
+            <div id="bottomText" class="memeText">
+                <img class="dragLayer" src="./img/drag.svg"></img>
+                <textarea></textarea>
+            </div>
       </div>
       <button id="generateButton">Generate</button>
       <canvas id="myCanvas" style="display:none;"></canvas>
