@@ -19,9 +19,12 @@ let containerSize = 500;
 
 const defaultInfo = {
     imgURL: localStorage['imgURL'] || './img/doge.jpeg',
-    title: '',
+    rendered: '',
+    title: localStorage['title'] || '',
     key: '',
+    date: '',
     imgSize: localStorage['imgSize'] || 451,
+    editable: 1,
     top: {
         fontSize: defaultF2C * containerSize,
         pos: 0,
@@ -121,7 +124,7 @@ function initTextBoxes() {
             let acquireB = document.querySelector('#acquireButton + div');
             acquireB.style.visibility = 'hidden';
 
-            console.log(`Start::::::::::lastDrag(${newInfo.lastDrag})::real(${textContainer.style.top})`);
+            //console.log(`Start::::::::::lastDrag(${newInfo.lastDrag})::real(${textContainer.style.top})`);
             if(qs == '#topText') { info.top = newInfo; }
             else { info.bot = newInfo; }
             //localStorage.setItem('info', JSON.stringify(info));
@@ -134,7 +137,7 @@ function initTextBoxes() {
             e.preventDefault();
             let d = e.screenY - newInfo.lastDrag;
             let newPos = newInfo.pos + d;
-            console.log(`newPos(${newPos}) = e.screenY(${e.screenY}) - lastDrag(${newInfo.lastDrag}) + info.${qs}.pos(${newInfo.pos})`);
+            //console.log(`newPos(${newPos}) = e.screenY(${e.screenY}) - lastDrag(${newInfo.lastDrag}) + info.${qs}.pos(${newInfo.pos})`);
             newInfo.lastDrag = e.screenY;
 
             if(newPos > 0 && newPos < B2C * containerSize) {
@@ -143,7 +146,7 @@ function initTextBoxes() {
                 console.error('Out of bounds');
             }
             textContainer.style.top = newInfo.pos+'px';
-            console.log(`d(${d}) ==> newPos(${newPos}) ==> pos(${newInfo.pos}) ==> real(${textContainer.style.top})`);
+            //console.log(`d(${d}) ==> newPos(${newPos}) ==> pos(${newInfo.pos}) ==> real(${textContainer.style.top})`);
             if(qs == '#topText') { info.top = newInfo; }
             else { info.bot = newInfo; }
             //localStorage.setItem('info', JSON.stringify(info));
@@ -250,9 +253,11 @@ function handleGenerate() {
     drawStroked(ctx, info.bot.text, ctx.canvas.width * 0.5, bt, info.bot.fontSize);
 
     let newImgDataURI = c.toDataURL('image/png');
-    var w = window.open("");
+    /*
+    var w = window.open('')
     w.document.write(`<img src="${newImgDataURI}">`);
-    //uploadRenderedImg(newImgDataURI);
+    */
+    uploadRenderedImg(newImgDataURI);
 }
 
 
@@ -289,7 +294,7 @@ function uploadRenderedImg(newImgDataURI) {
     }
     let newImgBlob = new Blob([new Uint8Array(a)], {type: 'image/png'});
     newImgBlob.lastModifiedDate = new Date();
-    newImgBlob.name = 'new-meme.png';
+    newImgBlob.name = info.title;
 
     let newImg = uploadcare.fileFrom('object', newImgBlob);
 
@@ -327,7 +332,19 @@ function openDialog(url) {
     share.initShare(shareButton, shareResult, url);
 
 
-    dialog.querySelector('#succSaveButton').addEventListener('click', ()=>{
+    let succSaveButton = dialog.querySelector('#succSaveButton');
+    succSaveButton.addEventListener('click', ()=>{
+        if(uid) {
+            info.rendered = url;
+            info.date = new Date();
+            setTimeout(()=>{
+                db.app_main.createMeme(uid, db.count, info);
+            }, 500);
+            succSaveButton.innerHTML = '<img src="./img/save-success.svg"><a href="./myMeme.html">Saved! Click to See Saved Meme</a>';
+        }
+        else {
+            succSaveButton.innerHTML = '<a href="./login.html">SignUp/LogIn To Save In Account</a>';
+        }
     });
     dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
 
@@ -357,6 +374,7 @@ function checkSignIn(user) {
 
     if(user) {
         uid = user.uid;
+        db.app_main.retriveData(uid);
         accountButton.style.display = '';
         myMemeButton.style.display = '';
         logoutButton.style.display = '';
@@ -405,9 +423,10 @@ function uploadHandleComplete(file) {
     else {
         info.imgSize = file.originalImageInfo.width;
     }
-    //console.warn('Resize after upload');
+    info.title = 'meme_' + file.name;
     handleResize();
 
+    localStorage.setItem('title', info.title);
     localStorage.setItem('imgSize', info.imgSize);
     localStorage.setItem('imgURL', info.imgURL);
     //localStorage.setItem('info', JSON.stringify(info));
@@ -415,6 +434,25 @@ function uploadHandleComplete(file) {
 }
 
 function acquireHandleComplete(file) {
+    info.imgURL = file.cdnUrl;
+    let r = /(?:crop\/)[0-9]*/;
+    //console.log(imgURL);
+    let t = info.imgURL.match(r);
+    if(t) {
+        r = /\d+/;
+        info.imgSize = parseInt(t[0].match(r)[0]);
+    }
+    else {
+        info.imgSize = file.originalImageInfo.width;
+    }
+    info.rendered = info.imgURL;
+    info.title = `meme_${file.name}`;
+    info.editable = 0;
+    info.date = new Date();
+
+    setTimeout(()=>{
+        db.app_main.createMeme(uid, db.count, info);
+    }, 500);
     window.open(file.cdnUrl);
     window.location.href = './myMeme.html';
 }

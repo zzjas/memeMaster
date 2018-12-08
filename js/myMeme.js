@@ -12,7 +12,8 @@ function main() {
         else window.location.href = 'index.html';
     });
 
-    memeList = db.getAllMemes(uid);
+    //memeList = db.getAllMemes(uid);
+    memeList = db.app_main.item;
     memeList.sort(sortByProp('date'));
 
     checkView();
@@ -71,7 +72,8 @@ function renderTable() {
         meme.setAttribute('class', 'meme');
         meme.addEventListener('load', ()=>{
             panel.appendChild(meme);
-            panel.appendChild(button.createButton('setting'));
+            panel.appendChild(button.createButton('trash'));
+            panel.appendChild(button.createButton('edit'));
             panel.appendChild(button.createButton('share'));
 
             let dB = button.createButton('download');
@@ -102,12 +104,6 @@ function checkView() {
 
 function removePanels() {
     let m = document.querySelector('main');
-    /*
-    let ps = m.querySelectorAll('.panel');
-    ps.forEach(e => {
-        m.removeChild(e);
-    });
-    */
     m.innerHTML = '';
 }
 
