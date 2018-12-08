@@ -2,19 +2,34 @@ body {
     text-align: center;
 }
 .tablePanel {
+    text-align: center;
     display: inline-block;
     position: relative;
-    width: 200px;
-    margin: 20px;
+    width: 16em;
+    height: 23em;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color: #F4F1F0;
+    background-color: #363331;
+    border: 3em, solid, #363331;
+    border-radius: 1em;
+    padding-top: 1em;
+    padding-bottom: 0; 
+    margin: 1em;
 }
 
 .tablePanel .meme {
-    width: 200px;
+    display: block;
+    width: 12em;
     display: block;
     height: auto;
+    margin: auto;
+    border-radius: 0.5em;
 }
 
 .tablePanel .info {
+    height: auto;
     display: block;
 }
 
@@ -23,26 +38,39 @@ body {
 }
 
 .tablePanel button {
-    width: 15%;
+    width: 18%;
     background-color: transparent;
     border: none;
+    margin: 3%;
+}
+
+.tablePanel button:hover {
+    background-color: #6A6766;
 }
 
 
 
-
+main {
+    text-align: center;
+}
 
 
 .listPanel {
     display: block;
     width: 85%;
     text-align:center;
-    margin: 20px;
+    margin: 1em auto 1em auto;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color: #F4F1F0;
+    background-color: #363331;
+    border: 3em, solid, #363331;
+    border-radius: 1em;
 }
 
 .listPanel .meme {
     display: inline-block;
-    width: 300px;
+    width: 10em;
     height: auto;
     vertical-align: middle;
 }
@@ -64,7 +92,7 @@ body {
 
 
 .listPanel .icon {
-    width: 50%;
+    width: 30%;
 }
 .listPanel button {
     width: 20%;

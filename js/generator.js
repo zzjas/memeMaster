@@ -3,8 +3,8 @@ import * as share from './share.js';
 import * as db from './firebase.js';
 
 
-const B2C = (33.46/40);
-const defaultF2C = (5.12/40);
+const B2C = (29.2775/40);
+const defaultF2C = (4.48/40);
 
 // firebase init
 let firebase = app_firebase;
@@ -75,9 +75,11 @@ function main() {
 
 
 
+    /*
     let p = document.createElement('p');
     p.innerHTML = `Raw: <a href="${info.raw}" target="_blank">${info.raw}</a>`;
     document.body.appendChild(p);
+    */
     
     // Set up the UploadCare widget
     let upload = uploadcare.Widget('#uploadButton');
@@ -317,9 +319,11 @@ function uploadRenderedImg(newImgDataURI) {
     let newImg = uploadcare.fileFrom('object', newImgBlob);
 
     newImg.done((fileInfo)=>{
+        /*
         let p = document.createElement('p');
         p.innerHTML = `Rendered: <a href='${fileInfo.cdnUrl}' target='_blank'>${fileInfo.cdnUrl}</a>`;
         document.body.appendChild(p);
+        */
 
         openDialog(fileInfo.cdnUrl);
     }).fail(()=>{
@@ -361,7 +365,6 @@ function openDialog(url) {
             else {
                 db.app_main.createMeme(uid, db.count, info);
             }
-            button.startLoading();
             setTimeout(()=>{
                 if(editting) { 
                     localStorage.setItem('editting', 0);
@@ -372,7 +375,6 @@ function openDialog(url) {
                     succSaveButton.removeEventListener('click', handleSaveButtonClick);
                     succSaveButton.innerHTML = '<img src="./img/save-success.svg"><a href="./myMeme.html">Saved! Click to See Saved Meme</a>';
                 }
-                button.endLoading();
             }, 800);
         }
         else {

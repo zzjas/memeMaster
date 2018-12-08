@@ -19,12 +19,15 @@
         </div>
     </noscript>
     <header>
-      <button id="myMemeButton" style="display:none">My Meme</button>
-      <button id="changePasswordButton" style="display:none">Change Password</button>
-      <button id="signupButton" style="display:none">Sign Up</button>
-      <button id="loginButton" style="display:none">Log In</button>
-      <button id="logoutButton" style="display:none">Log Out</button>
-      <canvas id="downloadCanvas" style="display: none;"></canvas>
+        <h1>Meme Master</h1>
+        <button id="myMemeButton" style="display:none">My Meme</button>
+        <button id="changePasswordButton" style="display:none">Change Password</button>
+        <button id="logoutButton" style="display:none">Log Out</button>
+        <button id="signupButton" style="display:none">Sign Up</button>
+        <button id="loginButton" style="display:none">Log In</button>
+        <canvas id="downloadCanvas" style="display: none;"></canvas>
+    </header> 
+    <main>
         <div id="uploadContainer">
             <input id="uploadButton"
                 type="hidden"
@@ -37,8 +40,6 @@
                 name="content"
                 data-crop="1:1">
         </div>
-    </header> 
-    <main>
         <div id="memeContainer">
         <img id="memeImg" alt="Meme" src="#">
         <div id="topText" class="memeText">

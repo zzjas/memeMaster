@@ -101,7 +101,17 @@ function renderList(type) {
             }
 
 
-            buttons.appendChild(button.createButton('share'));
+            let shareButton = button.createButton('share');
+            shareButton.addEventListener('click', ()=>{
+                const el = document.createElement('input');
+                el.value = memeInfo.rendered;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert('Link has been copied to clipboard!');
+            });
+            buttons.appendChild(shareButton);
 
             let downloadButton = button.createButton('download');
             downloadButton.addEventListener('click', button.generateDownloadHandler(memeInfo.rendered, memeInfo.title));
