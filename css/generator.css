@@ -91,7 +91,7 @@ dialog button {
     height: 5%;
     width: 50%;
     color: white;
-    font-style: bold;
+    font-weight: bold;
     display: block;
     margin: auto;
     text-align: center;
