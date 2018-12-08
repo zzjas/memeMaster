@@ -1,4 +1,4 @@
-export function generateDownloadHandler(url) {
+export function generateDownloadHandler(url, name) {
     return function () {
         let c = document.querySelector('#downloadCanvas');
         let ctx = c.getContext('2d');
@@ -11,7 +11,7 @@ export function generateDownloadHandler(url) {
             ctx.drawImage(background,0,0);
             let newImgDataURI = c.toDataURL('image/png');
             let a = document.createElement('a');
-            a.download = '';
+            a.download = name;
             a.href = newImgDataURI;
             a.click();
         };
@@ -44,4 +44,21 @@ export function createButton(name) {
     i.src = `./img/${name}.svg`;
     b.appendChild(i);
     return b;
+}
+
+
+export function startLoading() {
+    let b = document.createElement('div');
+    b.id = 'loadingBG';
+
+    let l = new Image();
+    l.src = './img/loading.svg';
+    b.appendChild(l);
+
+    document.body.appendChild(b);
+}
+
+export function endLoading() {
+    let b = document.querySelector('#loadingBG');
+    document.body.removeChild(b);
 }

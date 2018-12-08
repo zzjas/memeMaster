@@ -25,11 +25,13 @@ export var item = [];
 export var count = 0;
 (() => {
     function messageHandler(err) {
+        /*
         if(err) {
             console.log(err);
         } else {
             console.log("success");
         }
+        */
     }
 
     // time issue here
@@ -43,6 +45,7 @@ export var count = 0;
                 }
                 else {
                     let temp = childSnapShot.val();
+                    //console.log(`Retrived ==> ${JSON.stringify(temp)}`);
                     let t = {
                         key: childSnapShot.key,
                         title: temp.title,
@@ -74,10 +77,11 @@ export var count = 0;
         var path = "users/" + uid;
         var data = {
             title: info.title,
-            raw: info.imgURL,
+            raw: info.raw,
             rendered: info.rendered,
             date: info.date.toISOString(),
             editable: info.editable,
+            imgSize: info.imgSize,
             top: {
                 fontSize: info.top.fontSize,
                 pos: info.top.pos,
@@ -96,7 +100,7 @@ export var count = 0;
 
     // update a meme
     function fnUpdateMeme(uid, info){
-        var path = "users/" + uid + "/" + key;
+        var path = "users/" + uid + "/" + info.key;
         var data = {
             rendered: info.rendered,
             date: info.date.toISOString(),
@@ -115,9 +119,9 @@ export var count = 0;
     }
 
     // deleta a meme
-    function fnDeleteMeme(uid, key){
+    function fnDeleteMeme(uid, key, cb){
         var path = "users/" + uid + "/" + key;
-        app_firebase.databaseApi.delete(path, messageHandler);
+        app_firebase.databaseApi.delete(path, cb);
     }
 
 
@@ -200,6 +204,7 @@ export var count = 0;
     // app_main.readCount = fnReadCount;        
     // app_main.readAllMeme = fnReadAllMeme;
     // app_main.readAMeme = fnReadAMeme;
+
     app_main.createMeme = fnCreateMeme;
     app_main.updateMeme = fnUpdateMeme;
     app_main.deleteMeme = fnDeleteMeme;

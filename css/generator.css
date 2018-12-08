@@ -2,6 +2,10 @@ body {
     text-align: center;
 }
 
+html {
+    background-color: violet;
+}
+
 #memeContainer {
     margin: auto;
     position: relative;
@@ -76,6 +80,7 @@ body {
 dialog {
     position: absolute;
     top: 6%;
+    background-color: yellow;
 }
 
 dialog img {
@@ -99,4 +104,24 @@ dialog button img {
     height: 80%;
     margin: 0;
     display: inline-block;
+}
+
+#myMemeButton {
+    float: right;
+}
+
+#changePasswordButton {
+    float:left;
+}
+
+#signupButton  {
+    float:left;
+}
+
+#loginButton {
+    float:left;
+}
+
+#logoutButton {
+    float:left;
 }

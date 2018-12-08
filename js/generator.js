@@ -18,7 +18,7 @@ let containerSize = 500;
 
 
 const defaultInfo = {
-    imgURL: localStorage['imgURL'] || './img/doge.jpeg',
+    raw: localStorage['imgURL'] || './img/doge.jpeg',
     rendered: '',
     title: localStorage['title'] || '',
     key: '',
@@ -44,11 +44,23 @@ let info = defaultInfo;
 
 let imgRatio = info.imgSize/containerSize;
 
+let editting = false;
+
+function checkEdit() {
+    if(localStorage['editting']) {
+        editting = parseInt(localStorage['editting']);
+        if(editting && localStorage.info) {
+            info = JSON.parse(localStorage.info);
+        }
+    }
+    else { editting = false; }
+}
 
 function main() {
     // handle login & logout
     firebase.auth().onAuthStateChanged(checkSignIn);
 
+    checkEdit();
     handleResize();
     renderMemeContainer();
     initTextBoxes();
@@ -61,7 +73,7 @@ function main() {
 
 
     let p = document.createElement('p');
-    p.innerHTML = `Raw: <a href="${info.imgURL}" target="_blank">${info.imgURL}</a>`;
+    p.innerHTML = `Raw: <a href="${info.raw}" target="_blank">${info.raw}</a>`;
     document.body.appendChild(p);
     
     // Set up the UploadCare widget
@@ -71,6 +83,8 @@ function main() {
 
     let acquire = uploadcare.Widget('#acquireButton');
     document.querySelectorAll('#acquireButton + div button')[0].innerHTML = 'Upload Meme To Account';
+    document.querySelectorAll('#acquireButton + div button')[0].parentNode.style.marginLeft = '10%';
+    document.querySelectorAll('#acquireButton + div button')[0].parentNode.style.marginRight = '10%';
     acquire.onUploadComplete(acquireHandleComplete);
 
     // Render the image
@@ -143,7 +157,7 @@ function initTextBoxes() {
             if(newPos > 0 && newPos < B2C * containerSize) {
                 newInfo.pos = newPos;
             } else { 
-                console.error('Out of bounds');
+                //console.error('Out of bounds');
             }
             textContainer.style.top = newInfo.pos+'px';
             //console.log(`d(${d}) ==> newPos(${newPos}) ==> pos(${newInfo.pos}) ==> real(${textContainer.style.top})`);
@@ -171,9 +185,9 @@ function renderMemeContainer() {
     let memeContainer = document.querySelector('#memeContainer');
     let memeImg = memeContainer.querySelector('#memeImg');
 
-    if(memeImg.src != info.imgURL) {
+    if(memeImg.src != info.raw) {
         memeImg.crossOrigin = 'anonymous';
-        memeImg.src = info.imgURL;
+        memeImg.src = info.raw;
     }
     
     imgRatio = info.imgSize/containerSize;
@@ -231,7 +245,7 @@ function handleResize() {
  * Render the image with canvas
  */
 function handleGenerate() {
-    document.querySelector('#generateButton').innerHTML = 'Generating...';
+    button.startLoading();
 
     let img = document.querySelector('#memeImg');
     let c = document.querySelector('#myCanvas');
@@ -325,7 +339,7 @@ function openDialog(url) {
     meme.setAttribute('src', url);
     meme.addEventListener('load', ()=>{ dialog.showModal(); });
 
-    dialog.querySelector('#succDownloadButton').addEventListener('click', button.generateDownloadHandler(url));
+    dialog.querySelector('#succDownloadButton').addEventListener('click', button.generateDownloadHandler(url, info.title));
 
     let shareButton = dialog.querySelector('#succShareButton');
     let shareResult = dialog.querySelector('#shareResult');
@@ -337,10 +351,24 @@ function openDialog(url) {
         if(uid) {
             info.rendered = url;
             info.date = new Date();
-            setTimeout(()=>{
+            if(editting) {
+                db.app_main.updateMeme(uid, info);
+            }
+            else {
                 db.app_main.createMeme(uid, db.count, info);
-            }, 500);
-            succSaveButton.innerHTML = '<img src="./img/save-success.svg"><a href="./myMeme.html">Saved! Click to See Saved Meme</a>';
+            }
+            button.startLoading();
+            setTimeout(()=>{
+                if(editting) { 
+                    localStorage.setItem('editting', 0);
+                    localStorage.removeItem('info');
+                    window.location.href = './myMeme.html';
+                }
+                else {
+                    succSaveButton.innerHTML = '<img src="./img/save-success.svg"><a href="./myMeme.html">Saved! Click to See Saved Meme</a>';
+                }
+                button.endLoading();
+            }, 800);
         }
         else {
             succSaveButton.innerHTML = '<a href="./login.html">SignUp/LogIn To Save In Account</a>';
@@ -352,7 +380,7 @@ function openDialog(url) {
         let d = document.querySelector('dialog');
         d.parentElement.removeChild(d);
     }
-    document.querySelector('#generateButton').innerHTML = 'Generate';
+    setTimeout(button.endLoading,500);
     document.body.appendChild(dialog);
     dialog.querySelector('#succShareButton').style.display = '';
 }
@@ -366,7 +394,7 @@ function openDialog(url) {
  * @param {string} user 
  */
 function checkSignIn(user) {
-    let accountButton = document.querySelector('#accountButton');
+    let changePasswordButton = document.querySelector('#changePasswordButton');
     let myMemeButton = document.querySelector('#myMemeButton');
     let logoutButton = document.querySelector('#logoutButton');
     let signupButton = document.querySelector('#signupButton');
@@ -375,13 +403,14 @@ function checkSignIn(user) {
     if(user) {
         uid = user.uid;
         db.app_main.retriveData(uid);
-        accountButton.style.display = '';
+        changePasswordButton.style.display = '';
         myMemeButton.style.display = '';
         logoutButton.style.display = '';
         signupButton.style.display = 'none';
         loginButton.style.display = 'none';
 
         myMemeButton.addEventListener('click', button.generateGoToURLHandler('./myMeme.html'));
+        changePasswordButton.addEventListener('click', button.generateGoToURLHandler('./changepw.html'));
         logoutButton.addEventListener('click', ()=>{
             firebase.auth().signOut();
             window.location.href = window.location.href;
@@ -390,7 +419,7 @@ function checkSignIn(user) {
     else {
         // Not signed in
         uid = null;
-        if(accountButton.style.display !== 'none') accountButton.style.display = 'none';
+        if(changePasswordButton.style.display !== 'none') changePasswordButton.style.display = 'none';
         if(myMemeButton.style.display !== 'none') myMemeButton.style.display = 'none';
         if(logoutButton.style.display !== 'none') logoutButton.style.display = 'none';
         signupButton.style.display = '';
@@ -412,10 +441,10 @@ function checkSignIn(user) {
  * @param {object} info 
  */
 function uploadHandleComplete(file) {
-    info.imgURL = file.cdnUrl;
+    info.raw = file.cdnUrl;
     let r = /(?:crop\/)[0-9]*/;
-    //console.log(imgURL);
-    let t = info.imgURL.match(r);
+    //console.log(raw);
+    let t = info.raw.match(r);
     if(t) {
         r = /\d+/;
         info.imgSize = parseInt(t[0].match(r)[0]);
@@ -428,16 +457,16 @@ function uploadHandleComplete(file) {
 
     localStorage.setItem('title', info.title);
     localStorage.setItem('imgSize', info.imgSize);
-    localStorage.setItem('imgURL', info.imgURL);
+    localStorage.setItem('imgURL', info.raw);
     //localStorage.setItem('info', JSON.stringify(info));
     window.location.href = window.location.href;
 }
 
 function acquireHandleComplete(file) {
-    info.imgURL = file.cdnUrl;
+    info.raw = file.cdnUrl;
     let r = /(?:crop\/)[0-9]*/;
-    //console.log(imgURL);
-    let t = info.imgURL.match(r);
+    //console.log(raw);
+    let t = info.raw.match(r);
     if(t) {
         r = /\d+/;
         info.imgSize = parseInt(t[0].match(r)[0]);
@@ -445,14 +474,13 @@ function acquireHandleComplete(file) {
     else {
         info.imgSize = file.originalImageInfo.width;
     }
-    info.rendered = info.imgURL;
+    info.rendered = info.raw;
     info.title = `meme_${file.name}`;
     info.editable = 0;
     info.date = new Date();
 
+    db.app_main.createMeme(uid, db.count, info);
     setTimeout(()=>{
-        db.app_main.createMeme(uid, db.count, info);
+        window.location.href = './myMeme.html';
     }, 500);
-    window.open(file.cdnUrl);
-    window.location.href = './myMeme.html';
 }
