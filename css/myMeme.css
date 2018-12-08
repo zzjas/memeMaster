@@ -85,19 +85,19 @@ body {
 }
 
 #toggleView {
-    float: left;
+    float: right;
 }
 
 #newMemeButton  {
-    float:left;
+    float: right;
 }
 
 #changePasswordButton {
-    float:right;
+    float: left;
 }
 
 #logOutButton {
-    float:right;
+    float: left;
 }
 
 h1 {

@@ -105,21 +105,21 @@ dialog button img {
 }
 
 #myMemeButton {
-    float: left;
+    float: right;
 }
 
 #changePasswordButton {
-    float:right;
+    float:left;
 }
 
 #signupButton  {
-    float:right;
+    float:left;
 }
 
 #loginButton {
-    float:right;
+    float:left;
 }
 
 #logoutButton {
-    float:right;
+    float:left;
 }

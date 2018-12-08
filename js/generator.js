@@ -56,7 +56,6 @@ function main() {
     // Set up the UploadCare widget
     let upload = uploadcare.Widget('#uploadButton');
     document.querySelectorAll('#uploadButton + div button')[0].innerHTML = 'Upload Picture To Make Meme';
-    document.querySelectorAll('#uploadButton + div button')[0].parentNode.style.marginLeft = '20%';
     upload.onUploadComplete(uploadHandleComplete);
 
     let acquire = uploadcare.Widget('#acquireButton');
