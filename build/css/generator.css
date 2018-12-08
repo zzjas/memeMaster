@@ -1,0 +1,165 @@
+#uploadContainer {
+    margin: auto;
+    text-align: center;
+    padding-left: 10em;
+    padding-top: 1em;
+}
+#memeContainer {
+    margin: auto;
+    position: relative;
+    text-align: center;
+    width: 35vw;
+    height: 35vw;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1em solid #363331;
+    border-radius: 1em;
+}
+
+#memeImg {
+    z-index: 1;
+    height: 35vw;
+    width: 35vw;
+    margin: 0;
+}
+
+.memeText {
+    position: absolute;
+    z-index: 2;
+    border: 1px dashed gray;
+    width: 34.8425vw;
+    height: 5.4425vw;
+    padding: 0;
+    cursor: pointer;
+}
+
+#topText {
+    top: 0;
+}
+
+#bottomText {
+    top: 29.2775vw;
+}
+
+.memeText textarea {
+    background-color: transparent;
+    border:none;
+    text-align: center;
+    font-size: 4.48vw;
+    color: white;
+    font-family: Impact;
+    text-shadow:
+    -0.254vw -0.254vw 0 #000,  
+     0.254vw -0.254vw 0 #000,
+    -0.254vw  0.254vw 0 #000,
+     0.254vw  0.254vw 0 #000;
+     height: 100%;
+     width: 100%;
+     resize: none;
+     white-space: nowrap;
+     overflow-x: scroll;
+     overflow: hidden;
+     line-height: 1;
+}
+
+.memeText textarea:focus {
+    outline: none;
+    background-color: rgba(192,192,192, 0.5);
+    caret-color: black;
+}
+
+.dragLayer {
+    z-index: 10;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+dialog {
+    position: absolute;
+    top: 6%;
+    background-color: #363331;
+    padding: 3%;
+    border-radius: 5%;
+    width: 40vw;
+}
+
+dialog img {
+    display: block;
+    margin: auto;
+    width: 20vw;
+    border: 1em solid #6A6766;
+    border-radius: 0.6em;
+}
+
+dialog button {
+    display: block;
+    font-size: 1.2em !important;
+    background-color: #363331;
+    display:inline-block;
+    padding:0.35em 1.2em;
+    border:0.1em solid #FFFFFF;
+    margin:0.9em 0.3em 0.3em 0;
+    border-radius:0.12em;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#FFFFFF;
+    text-align:center;
+    transition: all 0.2s;
+}
+
+dialog button:hover {
+    color:#000000;
+    background-color:#FFFFFF;
+}
+
+dialog button a {
+    font-size: 1.2em !important;
+    text-decoration: none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#FFFFFF;
+}
+
+dialog button a:hover {
+    color:#000000;
+}
+
+@media all and (max-width:30em){
+    dialog button {
+      display:block;
+      margin:0.4em auto;
+    }
+}
+
+dialog button img {
+    display: none;
+}
+
+
+dialog input {
+   display: none; 
+}
+
+#myMemeButton {
+    float: right;
+}
+
+#changePasswordButton {
+    float: left;
+}
+#signupButton {
+    float: right;
+}
+
+
+#loginButton {
+    float:left;
+}
+
+#logoutButton {
+    float:left;
+}
