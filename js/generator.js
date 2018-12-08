@@ -271,6 +271,7 @@ function openDialog(url) {
     }
     document.querySelector('#generateButton').innerHTML = 'Generate';
     document.body.appendChild(dialog);
+    dialog.querySelector('#succShareButton').style.display = '';
 }
 
 

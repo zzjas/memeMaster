@@ -72,9 +72,8 @@ body {
 }
 
 dialog {
-    position: fixed;
-    top: 3%;
-    bottom: 3%;
+    position: absolute;
+    top: 6%;
 }
 
 dialog img {

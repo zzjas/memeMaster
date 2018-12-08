@@ -1,4 +1,4 @@
-header button, #generateButton {
+header button, #generateButton, .button {
     font-size: 1vw !important;
     background: #157cfc;
     color: #fff;
@@ -12,6 +12,6 @@ header button, #generateButton {
     outline:none;
 }
 
-header button:hover, #generateButton:hover {
+header button:hover, #generateButton:hover, .button:hover {
     background: #4B93F7;
 }

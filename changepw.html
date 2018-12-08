@@ -5,8 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Meme Master</title>
+    <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+    <script src="./js/settings.js"></script>
+    <link rel="stylesheet" href="./css/common.css">
+    <style>
+    	dialog {
+    		margin-top: 5%;  		
+    	}
+    	h1 {
+    		text-align: center;
+    		margin-top: 3%;
+    	}
+    	label {
+    		display: inline-block;
+    	}
+    	label, input, button {
+    		margin-top: 5%;
+    	}
+    	input#submitButton {
+			float: right;
+    	}
+    	button#cancelButton {
+    		float: left;
+    	}
+    	div div {
+    		margin-top: 10%;
+    	}
+    </style>
 </head>
 <body>
-    
+	<dialog open>
+		<h1>Meme Master</h1>
+    	<h3>Change Password:</h3>
+		<div>
+			<label for="email">Please Enter Your Email:</label><br>
+	    	<input type="text" id="email" name="email"><br>
+	    	<label for="currentPassword">Please Enter Your Current Password:</label><br>
+	    	<input type="password" id="currentPassword" name="currentPassword"><br>
+		    <label for="newPassword">Please Enter Your New Password:</label><br>
+	    	<input type="password" id="newPassword" name="newPassword"><br>
+			<div>
+		    	<button id="cancelButton" class="button">Cancel</button>
+	    		<input type="submit" value="Submit" id="submitButton" class="button">
+			</div>
+	    </div>
+	</dialog>
+	<script src="./js/changepw.js"></script>
 </body>
 </html>
