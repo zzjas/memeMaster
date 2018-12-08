@@ -56,12 +56,13 @@ function main() {
     // Set up the UploadCare widget
     let upload = uploadcare.Widget('#uploadButton');
     document.querySelectorAll('#uploadButton + div button')[0].innerHTML = 'Upload Picture To Make Meme';
-
+    document.querySelectorAll('#uploadButton + div button')[0].parentNode.style.marginLeft = '20%';
     upload.onUploadComplete(uploadHandleComplete);
 
     let acquire = uploadcare.Widget('#acquireButton');
     document.querySelectorAll('#acquireButton + div button')[0].innerHTML = 'Upload Meme To Account';
-
+    document.querySelectorAll('#acquireButton + div button')[0].parentNode.style.marginLeft = '10%';
+    document.querySelectorAll('#acquireButton + div button')[0].parentNode.style.marginRight = '10%';
     acquire.onUploadComplete(acquireHandleComplete);
 
 
@@ -283,7 +284,7 @@ function openDialog(url) {
  * @param {string} user 
  */
 function checkSignIn(user) {
-    let accountButton = document.querySelector('#accountButton');
+    let changePasswordButton = document.querySelector('#changePasswordButton');
     let myMemeButton = document.querySelector('#myMemeButton');
     let logoutButton = document.querySelector('#logoutButton');
     let signupButton = document.querySelector('#signupButton');
@@ -291,13 +292,14 @@ function checkSignIn(user) {
 
     if(user) {
         uid = user.uid;
-        accountButton.style.display = '';
+        changePasswordButton.style.display = '';
         myMemeButton.style.display = '';
         logoutButton.style.display = '';
         signupButton.style.display = 'none';
         loginButton.style.display = 'none';
 
         myMemeButton.addEventListener('click', button.generateGoToURLHandler('./myMeme.html'));
+        changePasswordButton.addEventListener('click', button.generateGoToURLHandler('./changepw.html'));
         logoutButton.addEventListener('click', ()=>{
             firebase.auth().signOut();
             window.location.href = window.location.href;
@@ -306,7 +308,7 @@ function checkSignIn(user) {
     else {
         // Not signed in
         uid = null;
-        if(accountButton.style.display !== 'none') accountButton.style.display = 'none';
+        if(changePasswordButton.style.display !== 'none') changePasswordButton.style.display = 'none';
         if(myMemeButton.style.display !== 'none') myMemeButton.style.display = 'none';
         if(logoutButton.style.display !== 'none') logoutButton.style.display = 'none';
         signupButton.style.display = '';

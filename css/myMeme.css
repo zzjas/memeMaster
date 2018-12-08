@@ -83,3 +83,27 @@ body {
     background-color: transparent;
     border: none;
 }
+
+#toggleView {
+    float: left;
+}
+
+#newMemeButton  {
+    float:left;
+}
+
+#changePasswordButton {
+    float:right;
+}
+
+#logOutButton {
+    float:right;
+}
+
+h1 {
+    text-align: center;
+}
+
+html {
+    background-color: violet;
+}
