@@ -1,6 +1,7 @@
 {
   "projects": {
     "./build": "meme-master-177fb",
-    "default": "meme-master-177fb"
+    "default": "meme-master-177fb",
+    ".": "meme-master-177fb"
   }
 }

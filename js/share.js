@@ -1,9 +1,6 @@
-export function initShare(shareButton, support, url){
-    // Listen for any clicks
-    shareButton.addEventListener('click', function (ev) {
-        // Check if the current browser supports the Web Share API
-        if (navigator.share !== undefined) {
-
+export function initShare(shareButton, dialog, url){
+    if (navigator.share !== undefined) {
+        let mobileHandler = (ev) => {
             // Get the canonical URL from the link tag
             var shareUrl = document.querySelector('link[rel=canonical]') ? document.querySelector('link[rel=canonical]').href : window.location.href;
 
@@ -15,20 +12,23 @@ export function initShare(shareButton, support, url){
                 .catch((error) => console.warn('Error sharing:', error));
 
             ev.preventDefault();
-        } 
-        else {
-            const el = document.createElement('input');
-            el.value = url;
-            support.appendChild(el);
-            const cb = document.createElement('button');
-            cb.innerHTML = "Copy Link";
-            cb.addEventListener('click',()=>{
-                el.select();
-                document.execCommand('copy');
-            });
-            support.appendChild(cb);
-            shareButton.style.display = 'none';
-            support.style.display = '';
-        }
-    });
+        };
+        shareButton.addEventListener('click', mobileHandler);
+    }
+    let secondHandler = ()=>{
+        const el = document.createElement('textarea');
+        el.value = url;
+        dialog.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        dialog.removeChild(el);
+        shareButton.innerHTML = 'Copied!';
+    };
+    let firstHandler = ()=>{
+        shareButton.innerHTML = 'Copy Link';
+        shareButton.removeEventListener('click', firstHandler);
+        shareButton.addEventListener('click', secondHandler);
+    };
+
+    shareButton.addEventListener('click', firstHandler);
 }

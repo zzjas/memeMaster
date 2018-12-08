@@ -1,6 +1,6 @@
 import * as button from './button.js';
-import * as share from './share.js';
 import * as db from './firebase.js';
+import * as share from './share.js';
 
 
 const B2C = (29.2775/35);
@@ -350,8 +350,24 @@ function openDialog(url) {
     dialog.querySelector('#succDownloadButton').addEventListener('click', button.generateDownloadHandler(url, info.title));
 
     let shareButton = dialog.querySelector('#succShareButton');
-    let shareResult = dialog.querySelector('#shareResult');
-    share.initShare(shareButton, shareResult, url);
+    share.initShare(shareButton, dialog, url);
+    /*
+    let secondHandler = () => {
+        const el = document.createElement('textarea');
+        el.value = url;
+        dialog.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        dialog.removeChild(el);
+        shareButton.innerHTML = 'Copied!';
+    };
+    let firstHandler = () => {
+        shareButton.innerHTML = 'Copy Link';
+        shareButton.removeEventListener('click', firstHandler);
+        shareButton.addEventListener('click', secondHandler);
+    };
+    shareButton.addEventListener('click', firstHandler);
+    */
 
 
     let succSaveButton = dialog.querySelector('#succSaveButton');
@@ -390,7 +406,6 @@ function openDialog(url) {
     }
     setTimeout(button.endLoading,500);
     document.body.appendChild(dialog);
-    dialog.querySelector('#succShareButton').style.display = '';
 }
 
 

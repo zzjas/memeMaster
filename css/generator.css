@@ -117,7 +117,7 @@ dialog button:hover {
 }
 
 dialog button a {
-    font-size: 1.2em !important;
+    font-size: 1em !important;
     text-decoration: none;
     font-family:'Roboto',sans-serif;
     font-weight:300;
