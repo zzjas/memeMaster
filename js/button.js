@@ -18,6 +18,17 @@ export function generateDownloadHandler(url) {
     };
 }
 
+export function generateEditHandler(info) {
+    return function () {
+        localStorage.setItem('edit', JSON.stringify({
+            imgURL: info.raw,
+            imgSize: info.size,
+            fontSize: info.fontSize,
+            
+        }));
+    };
+}
+
 
 export function generateGoToURLHandler(url) {
     return function t() {

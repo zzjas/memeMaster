@@ -1,31 +1,4 @@
 //var app_firebase = {};
-/*
-function aasdasd(){
-    // Initialize Firebase
-    var config = {
-        apiKey: 'AIzaSyD6xIsrbAiwYJ9hDJBO7xjvLZsUo0tL1Tg',
-        authDomain: 'meme-master-177fb.firebaseapp.com',
-        databaseURL: 'https://meme-master-177fb.firebaseio.com',
-        projectId: 'meme-master-177fb',
-        storageBucket: 'meme-master-177fb.appspot.com',
-        messagingSenderId: '1043399803617'
-    };
-    firebase.initializeApp(config);
-    app_firebase = firebase;
-}
-*/
-
-
-export function storeNewMeme(uid, fileName, raw, rendered, top, bottom, offset, editable, date) {
-    // let title = fileName + "_meme_";
-    // Generate a title by count
-    return 1;
-}
-
-export function updateMeme(uid, title, rendered, top, bottom, offset, date) {
-
-}
-
 export function getAllMemes(uid) {
     // return a list of {title, rendered, editable, date}
 
@@ -41,14 +14,12 @@ export function getAllMemes(uid) {
     return memeList;
 }
 
-export function getSingleMeme(uid, title) {
-    return {
-        rendered: '',
-        top: '',
-        bottom: '',
-        offset: ''
-    };
-}
+
+
+
+
+
+
 
 export var app_main = {};
 export var item = [];
@@ -63,7 +34,7 @@ export var count = 0;
     }
 
     // time issue here
-    function retriveData(uid){
+    //function retriveData(uid){
         app_firebase.database().ref('users/' + uid).on('value', function(snapshot) {
             item = [];
             count = 0;
@@ -89,12 +60,13 @@ export var count = 0;
                     item.push(t);
                 }
             });
-            console.log(item);
-            console.log(count);
+            //console.log(item);
+            //console.log(count);
         });       
-    }
+    //}
 
     // create a user
+    /*
     function fnCreateUser(uid){
         var path = "users/" + uid;
         var data = {
@@ -117,6 +89,7 @@ export var count = 0;
             }
         }
     }
+    */
 
     // return the count of the user
     // function fnReadCount(uid){
@@ -139,26 +112,6 @@ export var count = 0;
     //     }
     // }    
 
-    // create a meme
-    function fnCreateMeme(uid,currentCount,title,raw,rendered,date,editable,top_pos,
-        top_fontSize,top_text,bottom_pos,bottom_fontSize,bottom_text){
-        var path = "users/" + uid;
-        var data = {
-            title: title,
-            raw: raw,
-            rendered: rendered,
-            date: date,
-            editable: editable,
-            top_pos: top_pos,
-            top_fontSize: top_fontSize,
-            top_text: top_text,
-            bottom_pos: bottom_pos,
-            bottom_fontSize: bottom_fontSize,
-            bottom_text: bottom_text
-        }
-        app_firebase.databaseApi.update(path, {count:currentCount+1}, messageHandler);  
-        app_firebase.database().ref(path).push(data);
-    }
 
     // return all meme
     // function fnReadAllMeme(uid){
@@ -182,39 +135,56 @@ export var count = 0;
     //     }
     // }
 
+    // create a meme
+    function fnCreateMeme(uid,currentCount,info){
+        var path = "users/" + uid;
+        var data = {
+            title: info.title,
+            raw: info.raw,
+            rendered: info.rendered,
+            date: info.date.toISOString(),
+            editable: info.editable,
+            top_pos: info.top_pos,
+            top_fontSize: info.top_fontSize,
+            top_text: info.top_text,
+            bottom_pos: info.bottom_pos,
+            bottom_fontSize: info.bottom_fontSize,
+            bottom_text: info.bottom_text
+        }
+        app_firebase.databaseApi.update(path, {count:currentCount+1}, messageHandler);  
+        app_firebase.database().ref(path).push(data);
+    }
+
+
     // update a meme
-    function fnUpdateMeme(uid,rendered,date,top_pos,top_fontSize,
-        top_text,bottom_pos,bottom_fontSize,bottom_text){
+    function fnUpdateMeme(uid, info){
         var path = "users/" + uid + "/" + key;
         var data = {
-            // title: title,
-            // raw: raw,
-            rendered: rendered,
-            date: date,
-            // editable: editable,
-            top_pos: top_pos,
-            top_fontSize: top_fontSize,
-            top_text: top_text,
-            bottom_pos: bottom_pos,
-            bottom_fontSize: bottom_fontSize,
-            bottom_text: bottom_text
+            rendered: info.rendered,
+            date: info.date.toISOString(),
+            top_pos: info.top_pos,
+            top_fontSize: info.top_fontSize,
+            top_text: info.top_text,
+            bottom_pos: info.bottom_pos,
+            bottom_fontSize: info.bottom_fontSize,
+            bottom_text: info.bottom_text
         }
         app_firebase.databaseApi.update(path, data, messageHandler);        
     }
 
     // deleta a meme
-    function fnDeleteMeme(uid,key){
+    function fnDeleteMeme(uid, key){
         var path = "users/" + uid + "/" + key;
-        app_firebase.databaseApi.delete(path, messageHandler);      
+        app_firebase.databaseApi.delete(path, messageHandler);
     }
 
-    app_main.createUser = fnCreateUser;
-    app_main.readUser = fnReadUser;
+    // app_main.createUser = fnCreateUser;
+    // app_main.readUser = fnReadUser;
     // app_main.readCount = fnReadCount;        
-    app_main.createMeme = fnCreateMeme;
     // app_main.readAllMeme = fnReadAllMeme;
     // app_main.readAMeme = fnReadAMeme;
+    app_main.createMeme = fnCreateMeme;
     app_main.updateMeme = fnUpdateMeme;
     app_main.deleteMeme = fnDeleteMeme;
-    app_main.retriveData = retriveData;
+    //app_main.retriveData = retriveData;
 })();

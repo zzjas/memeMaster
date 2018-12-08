@@ -9,56 +9,39 @@ let imgSize = localStorage['imgSize'] || 500;
 let containerSize = localStorage['containerSize'] || 500;
 let imgRatio = imgSize/containerSize;
 const B2C = (33.46/40);
+// F2C is the fontSize for firebase
 let F2C = (5.12/40);
 localStorage.setItem('F2C', F2C);
+let topInfo = { top: 0 * imgRatio, fontSize: F2C * containerSize, text: 'Upper Meme', pos: 0 };
+let bottomInfo = { top: B2C * containerSize, fontSize: F2C * containerSize, text: 'Lower Meme', pos: 0 };
 
-let topInfo = {
-    top: 0 * imgRatio, fontSize: F2C * containerSize, text: 'Upper Meme', pos: 0
-};
-let bottomInfo = {
-    top: B2C * containerSize, fontSize: F2C * containerSize, text: 'Lower Meme', pos: 0
-};
+function checkEdit() {
+    if(!localStorage['edit']) { return; }
+    let info = JSON.parse(localStorage.edit);
 
-function handleResize() {
-    let memeContainer = document.querySelector('#memeContainer');
+    imgURL = info.imgURL;
+    localStorage.setItem('currMeme', imgURL);
 
-    let newContainerSize = memeContainer.clientWidth;
+    imgSize = info.imgSize;
+    localStorage.setItem('imgSize', imgSize);
 
-    imgRatio = imgSize/newContainerSize;
+    F2C = info.fontSize;
+    localStorage.setItem('F2C', F2C);
 
-    
-    let tt = document.querySelector('#topText');
-    topInfo.fontSize = F2C * newContainerSize;
-    tt.style.fontSize = topInfo.fontSize;
-    let a = topInfo.top;
-    topInfo.top = (topInfo.top / containerSize) * newContainerSize;
-    tt.style.top = topInfo.top;
-    /*
-    console.log(`${a} ==> ${topInfo.top}`);
-    console.log(`${a/containerSize} ==> ${topInfo.top/newContainerSize}`);
-    console.log();
-    console.log('********');
-    */
-
-    let bt = document.querySelector('#bottomText');
-    bottomInfo.fontSize = F2C * newContainerSize;
-    bt.style.fontSize = bottomInfo.fontSize;
-
-    bottomInfo.top = (bottomInfo.top / containerSize) * newContainerSize;
-    bt.style.top = bottomInfo.top;
-
-    containerSize = newContainerSize;
-    localStorage.setItem('containerSize', containerSize);
-
-    //console.log(`ctnr(${containerSize}), imgSize(${imgSize}), ratio(${imgRatio}))`);
+    topInfo.top = {
+        top: info.top_pos,
+        fontSize: F2C * containerSize,
+        text: info.top_text
+    };
 }
 
 function main() {
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    
     // handle login & logout
     firebase.auth().onAuthStateChanged(checkSignIn);
+
+    checkEdit();
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
 
     // Put default or last meme as placeholder
@@ -94,6 +77,11 @@ function main() {
 
 window.addEventListener('load', ()=> main() );
 
+
+
+
+
+/******************************* Helpers ************************************/
 function createTextBox(qs, info) {
     document.getElementById('memeImg').ondragstart = function() { return false; };
     let textContainer = document.querySelector(qs);
@@ -146,7 +134,45 @@ function createTextBox(qs, info) {
 
 
 
-/******************************* Helpers ************************************/
+
+
+function handleResize() {
+    let memeContainer = document.querySelector('#memeContainer');
+
+    let newContainerSize = memeContainer.clientWidth;
+
+    imgRatio = imgSize/newContainerSize;
+
+    
+    let tt = document.querySelector('#topText');
+    topInfo.fontSize = F2C * newContainerSize;
+    tt.style.fontSize = topInfo.fontSize;
+    let a = topInfo.top;
+    topInfo.top = (topInfo.top / containerSize) * newContainerSize;
+    tt.style.top = topInfo.top;
+    /*
+    console.log(`${a} ==> ${topInfo.top}`);
+    console.log(`${a/containerSize} ==> ${topInfo.top/newContainerSize}`);
+    console.log();
+    console.log('********');
+    */
+
+    let bt = document.querySelector('#bottomText');
+    bottomInfo.fontSize = F2C * newContainerSize;
+    bt.style.fontSize = bottomInfo.fontSize;
+
+    bottomInfo.top = (bottomInfo.top / containerSize) * newContainerSize;
+    bt.style.top = bottomInfo.top;
+
+    containerSize = newContainerSize;
+    localStorage.setItem('containerSize', containerSize);
+
+    //console.log(`ctnr(${containerSize}), imgSize(${imgSize}), ratio(${imgRatio}))`);
+}
+
+
+
+
 /**
  * Render the image with canvas
  */
