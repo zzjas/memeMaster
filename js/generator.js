@@ -39,7 +39,7 @@ function main() {
     // handle login & logout
     firebase.auth().onAuthStateChanged(checkSignIn);
 
-    checkEdit();
+    //checkEdit();
     handleResize();
     window.addEventListener('resize', handleResize);
 

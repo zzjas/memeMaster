@@ -34,7 +34,7 @@ export var count = 0;
     }
 
     // time issue here
-    //function retriveData(uid){
+    function retriveData(uid){
         app_firebase.database().ref('users/' + uid).on('value', function(snapshot) {
             item = [];
             count = 0;
@@ -63,7 +63,7 @@ export var count = 0;
             //console.log(item);
             //console.log(count);
         });       
-    //}
+    }
 
     // create a user
     /*
