@@ -54,6 +54,7 @@ export var count = 0;
                         date: new Date(temp.date),
                         editable: temp.editable,
                         imgSize: temp.imgSize,
+                        lastContainerSize: temp.lastContainerSize,
                         top: {
                             fontSize: temp.top.fontSize,
                             pos: temp.top.pos,
@@ -82,6 +83,7 @@ export var count = 0;
             date: info.date.toISOString(),
             editable: info.editable,
             imgSize: info.imgSize,
+            lastContainerSize: info.lastContainerSize,
             top: {
                 fontSize: info.top.fontSize,
                 pos: info.top.pos,
@@ -104,6 +106,7 @@ export var count = 0;
         var data = {
             rendered: info.rendered,
             date: info.date.toISOString(),
+            lastContainerSize: info.lastContainerSize,
             top: {
                 fontSize: info.top.fontSize,
                 pos: info.top.pos,

@@ -15,6 +15,14 @@ async function main() {
         else window.location.href = 'index.html';
     });
 
+    document.querySelector('#toggleView').addEventListener('click', handleToggleView);
+    document.querySelector('#logOutButton').addEventListener('click', () => {
+        firebase.auth().signOut();
+        button.generateGoToURLHandler('./login.html');
+    });
+    document.querySelector('#newMemeButton').addEventListener('click', button.generateGoToURLHandler('./index.html'));
+    document.querySelector('#changePasswordButton').addEventListener('click', button.generateGoToURLHandler('./changepw.html'));
+
     let loading = document.createElement('img');
     loading.id = 'loading';
     loading.src = './img/loading.svg';
@@ -37,16 +45,6 @@ async function main() {
     memeList.sort(sortByProp('-date'));
     document.body.removeChild(loading);
     checkView();
-   
-
-
-    document.querySelector('#toggleView').addEventListener('click', handleToggleView);
-    document.querySelector('#logOutButton').addEventListener('click', () => {
-        firebase.auth().signOut();
-        button.generateGoToURLHandler('./login.html');
-    });
-    document.querySelector('#newMemeButton').addEventListener('click', button.generateGoToURLHandler('./index.html'));
-    document.querySelector('#changePasswordButton').addEventListener('click', button.generateGoToURLHandler('./changepw.html'));
 }
 
 
@@ -83,8 +81,8 @@ function renderList(type) {
             trashButton.addEventListener('click', ()=>{
                 let c = confirm('Be careful! You will lose this fantastic meme forever if you choose OK');
                 if(c) {
-                    button.startLoading();
                     db.app_main.deleteMeme(uid, memeInfo.key, ()=>{
+                        button.startLoading();
                         window.location.href = window.location.href;
                     });
                 }

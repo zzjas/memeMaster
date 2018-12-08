@@ -24,6 +24,7 @@ const defaultInfo = {
     key: '',
     date: '',
     imgSize: localStorage['imgSize'] || 451,
+    lastContainerSize: '',
     editable: 1,
     top: {
         fontSize: defaultF2C * containerSize,
@@ -51,6 +52,8 @@ function checkEdit() {
         editting = parseInt(localStorage['editting']);
         if(editting && localStorage.info) {
             info = JSON.parse(localStorage.info);
+            console.log(info.top.pos + ', ' + info.bot.pos + ', ' + info.lastContainerSize);
+            containerSize = info.lastContainerSize;
         }
     }
     else { editting = false; }
@@ -199,9 +202,9 @@ function renderMemeContainer() {
         //text.setAttribute('maxlength', `${(37.4/500) * containerSize}`);
         //console.log(`containerSize is ${containerSize}`);
         //console.log(`maxlength is: ${(37.4/500) * containerSize}`);
-        text.style.fontSize = T ? info.top.fontSize : info.bot.fontSize;
+        text.style.fontSize = `${T ? info.top.fontSize : info.bot.fontSize}px`;
         text.value = T ? info.top.text : info.bot.text;
-        text.style.top = T ? info.top.pos : info.bot.pos;
+        textContainer.style.top = `${T ? info.top.pos : info.bot.pos}px`;
     });
 }
 
@@ -233,6 +236,7 @@ function handleResize() {
     info.bot.pos *= delta;
 
     containerSize = newContainerSize;
+    info.lastContainerSize = containerSize;
     //localStorage.setItem('info', JSON.stringify(info));
     //localStorage.setItem('containerSize', containerSize);
 
@@ -347,7 +351,7 @@ function openDialog(url) {
 
 
     let succSaveButton = dialog.querySelector('#succSaveButton');
-    succSaveButton.addEventListener('click', ()=>{
+    let handleSaveButtonClick = ()=>{
         if(uid) {
             info.rendered = url;
             info.date = new Date();
@@ -365,6 +369,7 @@ function openDialog(url) {
                     window.location.href = './myMeme.html';
                 }
                 else {
+                    succSaveButton.removeEventListener('click', handleSaveButtonClick);
                     succSaveButton.innerHTML = '<img src="./img/save-success.svg"><a href="./myMeme.html">Saved! Click to See Saved Meme</a>';
                 }
                 button.endLoading();
@@ -373,7 +378,8 @@ function openDialog(url) {
         else {
             succSaveButton.innerHTML = '<a href="./login.html">SignUp/LogIn To Save In Account</a>';
         }
-    });
+    };
+    succSaveButton.addEventListener('click', handleSaveButtonClick);
     dialog.querySelector('#succDiscardButton').addEventListener('click', discard);
 
     function discard() {
