@@ -13,12 +13,17 @@
     <link rel="stylesheet" href="./css/common.css">
 </head>
 <body>
+    <noscript>
+        <div style="text-align: center;">
+            <p style="color: red;font-size: 40px">Sorry, your browser does not support JavaScript!</p>
+        </div>
+    </noscript>
     <header>
       <button id="myMemeButton" style="display:none">My Meme</button>
+      <button id="changePasswordButton" style="display:none">Change Password</button>
       <button id="signupButton" style="display:none">Sign Up</button>
       <button id="loginButton" style="display:none">Log In</button>
       <button id="logoutButton" style="display:none">Log Out</button>
-      <button id="accountButton" style="display:none">Change Password</button>
       <canvas id="downloadCanvas" style="display: none;"></canvas>
         <div id="uploadContainer">
             <input id="uploadButton"
@@ -35,15 +40,15 @@
     </header> 
     <main>
         <div id="memeContainer">
-            <img id="memeImg" alt="Meme">
-            <div id="topText" class="memeText">
-                <img class="dragLayer" src="./img/drag.svg"></img>
-                <textarea></textarea>
-            </div>
-            <div id="bottomText" class="memeText">
-                <img class="dragLayer" src="./img/drag.svg"></img>
-                <textarea></textarea>
-            </div>
+        <img id="memeImg" alt="Meme" src="#">
+        <div id="topText" class="memeText">
+            <img class="dragLayer" alt="topText" src="./img/drag.svg">
+            <textarea></textarea>
+        </div>
+        <div id="bottomText" class="memeText">
+            <img class="dragLayer" alt="bottomText" src="./img/drag.svg">
+            <textarea></textarea>
+        </div>
       </div>
       <button id="generateButton">Generate</button>
       <canvas id="myCanvas" style="display:none;"></canvas>

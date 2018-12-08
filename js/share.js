@@ -26,7 +26,6 @@ export function initShare(shareButton, support, url){
                 el.select();
                 document.execCommand('copy');
             });
-            support.removeChild(el);
             support.appendChild(cb);
             shareButton.style.display = 'none';
             support.style.display = '';

@@ -18,6 +18,12 @@ function main() {
     checkView();
 
     document.querySelector('#toggleView').addEventListener('click', handleToggleView);
+    document.querySelector('#logOutButton').addEventListener('click', () => {
+        firebase.auth().signOut();
+        button.generateGoToURLHandler('./login.html');
+    });
+    document.querySelector('#newMemeButton').addEventListener('click', button.generateGoToURLHandler('./index.html'));
+    document.querySelector('#changePasswordButton').addEventListener('click', button.generateGoToURLHandler('./changepw.html'));
 }
 
 

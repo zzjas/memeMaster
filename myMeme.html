@@ -12,12 +12,17 @@
     <script src="./js/myMeme.js" type="module"></script>
 </head>
 <body>
+    <noscript>
+        <div style="text-align: center;">
+            <p style="color: red;font-size: 40px">Sorry, your browser does not support JavaScript!</p>
+        </div>
+    </noscript>
     <header>
         <button id="toggleView">List</button>
-        <a href="./index.html" style="text-decoration: none;">
-            <button>Add new meme</button>
-        </a>
-        <button id="accountButton">Account</button>
+        <button id="newMemeButton">Add new meme</button>
+        <button id="changePasswordButton">Change Password</button>
+        <button id="logOutButton">Log Out</button>
+        <h1>My Meme</h1>
         <canvas id="downloadCanvas" style="display: none;"></canvas>
     </header>
     <main>
