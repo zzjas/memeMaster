@@ -22,6 +22,7 @@ function main() {
         firebase.auth().signOut();
         button.generateGoToURLHandler('./login.html');
     });
+    document.querySelector('#newMemeButton').addEventListener('click', button.generateGoToURLHandler('./index.html'));
     document.querySelector('#changePasswordButton').addEventListener('click', button.generateGoToURLHandler('./changepw.html'));
 }
 
