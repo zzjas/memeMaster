@@ -5,17 +5,40 @@ let uid = null;
 let memeList = [];
 let tableView = localStorage['tableView'] ? parseInt(localStorage['tableView']) : 1;
 
-function main() {
+async function main() {
     // Confirm login information
     firebase.auth().onAuthStateChanged(user => {
-        if(user) uid = user;
+        if(user) {
+            uid = user.uid; 
+            db.app_main.retriveData(uid);
+        } 
         else window.location.href = 'index.html';
     });
 
-    memeList = db.getAllMemes(uid);
-    memeList.sort(sortByProp('date'));
+    let loading = document.createElement('img');
+    loading.id = 'loading';
+    loading.src = './img/loading.svg';
+    document.body.appendChild(loading);
 
+    //memeList = db.getAllMemes(uid);
+    let cnt = 0;
+    while(memeList.length == 0) {
+        cnt++;
+        if(cnt == 25) {
+            let warning = document.createElement('p');
+            warning.id = 'warning';
+            warning.innerHTML = 'Go make a new meme so that the cute cat can have a rest!';
+            document.body.appendChild(warning);
+        }
+        memeList = db.item;
+        await sleep(200);
+    }
+
+    memeList.sort(sortByProp('-date'));
+    document.body.removeChild(loading);
     checkView();
+   
+
 
     document.querySelector('#toggleView').addEventListener('click', handleToggleView);
     document.querySelector('#logOutButton').addEventListener('click', () => {
@@ -34,86 +57,95 @@ window.addEventListener('load', main);
 
 
 
-function renderList() {
+function renderList(type) {
     memeList.forEach(memeInfo => {
         let panel = document.createElement('div');
-        panel.setAttribute('class', 'listPanel panel');
+        panel.className = `${type}Panel panel`;
 
         let meme = new Image();
         meme.setAttribute('class', 'meme');
         meme.addEventListener('load', ()=>{
             panel.appendChild(meme);
-            let right = document.createElement('div');
-            right.setAttribute('class', 'right');
+            let info = document.createElement('div');
+            info.setAttribute('class', 'info');
 
             let title = document.createElement('p');
             title.setAttribute('class', 'title');
-            title.innerHTML = 'Title Here';
-            right.appendChild(title);
+            title.innerHTML = `${memeInfo.title} [Last Edited @ ${memeInfo.date.toDateString()}]`;
+            info.appendChild(title);
 
-            let bs = document.createElement('div');
-            bs.setAttribute('class', 'listButtons');
-            bs.appendChild(button.createButton('trash'));
-            bs.appendChild(button.createButton('edit'));
-            bs.appendChild(button.createButton('share'));
+            let buttons = document.createElement('div');
+            buttons.setAttribute('class', 'listButtons');
 
-            let dB = button.createButton('download');
-            dB.addEventListener('click', button.generateDownloadHandler(memeInfo.url));
-            bs.appendChild(dB);
-            right.appendChild(bs);
-            panel.appendChild(right);
+
+
+            let trashButton = button.createButton('trash');
+            trashButton.addEventListener('click', ()=>{
+                let c = confirm('Be careful! You will lose this fantastic meme forever if you choose OK');
+                if(c) {
+                    button.startLoading();
+                    db.app_main.deleteMeme(uid, memeInfo.key, ()=>{
+                        window.location.href = window.location.href;
+                    });
+                }
+            });
+            buttons.appendChild(trashButton);
+
+
+            if(memeInfo.editable) {
+                let editButton = button.createButton('edit');
+                editButton.addEventListener('click', ()=>{
+                    localStorage.setItem('editting', 1);
+                    localStorage.setItem('info', JSON.stringify(memeInfo));
+                    window.location.href = './index.html';
+                });
+                buttons.appendChild(editButton);
+            }
+
+
+            buttons.appendChild(button.createButton('share'));
+
+            let downloadButton = button.createButton('download');
+            downloadButton.addEventListener('click', button.generateDownloadHandler(memeInfo.rendered, memeInfo.title));
+            buttons.appendChild(downloadButton);
+            info.appendChild(buttons);
+            panel.appendChild(info);
             document.querySelector('main').appendChild(panel);
         });
-        meme.src = memeInfo.url;
+        meme.src = memeInfo.rendered;
     });
 }
 
+/*
 function renderTable() {
-    memeList.forEach(memeInfo => {
-        let panel = document.createElement('div');
-        panel.setAttribute('class', 'tablePanel panel');
-
-        let meme = new Image();
-        meme.setAttribute('class', 'meme');
-        meme.addEventListener('load', ()=>{
-            panel.appendChild(meme);
-            panel.appendChild(button.createButton('setting'));
-            panel.appendChild(button.createButton('share'));
-
-            let dB = button.createButton('download');
-            dB.addEventListener('click', button.generateDownloadHandler(memeInfo.url));
-            panel.appendChild(dB);
-
-            document.querySelector('main').appendChild(panel);
-        });
-        meme.src = memeInfo.url;
+    renderList();
+    let panels = document.querySelectorAll('.listPanel');
+    panels.forEach(panel => {
+        console.log('Changing...');
+        panel.className = 'tablePanel panel';
     });
 }
+*/
 
 
 
 function checkView() {
     let b = document.querySelector('#toggleView');
+    tableView =  (localStorage.tableView) ? parseInt(localStorage.tableView) : 1;
     if(tableView) {
         b.innerHTML = 'List';
         removePanels();
-        renderTable();
+        renderList('table');
     }
     else {
         b.innerHTML = 'Table';
         removePanels();
-        renderList();
+        renderList('list');
     }
 }
 
 function removePanels() {
     let m = document.querySelector('main');
-    /*
-    let ps = m.querySelectorAll('.panel');
-    ps.forEach(e => {
-        m.removeChild(e);
-    });
-    */
     m.innerHTML = '';
 }
 
@@ -135,4 +167,9 @@ function sortByProp(property) {
         var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
     };
+}
+
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

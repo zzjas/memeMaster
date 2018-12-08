@@ -56,6 +56,8 @@ html {
      height: 100%;
      width: 100%;
      resize: none;
+     white-space: nowrap;
+     overflow-x: scroll;
      overflow: hidden;
      line-height: 1;
 }
