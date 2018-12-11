@@ -64,4 +64,6 @@ typings/
 *.code-workspace
 .idea
 .DS_Store
-.firebase/hosting..cache
+.firebase
+.vscode
+./js/settings.js
